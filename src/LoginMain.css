@@ -1,0 +1,345 @@
+html, body {
+  height: 100vh;
+}
+
+.App {
+  height: 100vh;
+  background-color: black;
+}
+
+.App > div {
+  margin: 0;
+  min-height: 100%;
+  padding: 0;
+  position: relative;
+  z-index: 0;
+}
+
+.App > div .Login-Wrapper-Background {
+  display: none;
+}
+
+.Login-Wrapper-Background {
+  opacity: .4;
+}
+
+@media only screen and (min-width: 740px) {
+  .Header.Login-Header {
+    background: linear-gradient(180deg, rgba(0, 0, 0, .5) 0, transparent);
+    border-bottom: transparent;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 740px) {
+  .App > div {
+    background-color: #000;
+    color: #fff;
+  }
+}
+
+@media only screen and (min-width: 740px) {
+  .Login-Body {
+    background-color: transparent;
+    margin: 0 auto -236px;
+    max-width: 450px;
+    min-height: 100vh;
+  }
+}
+
+@media only screen and (min-width: 740px) {
+  .Login-Body:before {
+    content: "";
+    display: block;
+    height: 91px;
+  }
+}
+
+@media only screen and (min-width: 740px) {
+  .Login-Body:after {
+    content: "";
+    display: block;
+    height: 236px;
+  }
+}
+
+@media only screen and (min-width: 740px) {
+  .App > div .Sign_bg {
+    min-height: 100%;
+    min-width: 100%;
+  }
+}
+
+@media only screen and (min-width: 740px) {
+  .App > div .Login-Wrapper-Background {
+    background-size: cover;
+    display: block;
+    height: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    z-index: -1;
+  }
+}
+
+@media only screen and (min-width: 740px) {
+  .Login-Content.Login-Form {
+    margin-bottom: 90px;
+    min-height: 625px;
+    padding: 60px 68px 40px;
+  }
+}
+
+@media only screen and (min-width: 740px) {
+  .Login-Content.Login-Form.Login-Form-Signup {
+    min-height: 660px;
+  }
+}
+
+@media only screen and (min-width: 500px) {
+  .Login-Content {
+    min-width: 380px;
+  }
+}
+
+h1 {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 500;
+  margin-bottom: 28px;
+}
+
+input[type=checkbox],
+input[type=radio] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+a {
+  background-color: transparent;
+  text-decoration: none;
+}
+
+.Login-Header {
+  height: 75px;
+}
+
+.Login-Body {
+  color: #333;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+.Login-Form.Login-Form-Signup {
+  min-height: 550px;
+}
+
+.Login-Form {
+  background-color: rgba(0,0,0,.75);
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-height: 515px;
+  padding: 20px 0 30px;
+  width: 100%;
+}
+
+.Login-Form-Signup {
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.Login-Main {
+  flex-grow: 1;
+}
+
+.LoginId {
+  max-width: 100%;
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.LoginTextField {
+  border: 0;
+  border-radius: 4px;
+  height: 50px;
+  line-height: 50px;
+  padding: 16px 20px 0;
+  width: 100%;
+  box-shadow: none;
+  appearance: none;
+  box-sizing: border-box;
+}
+
+.LoginPassWord {
+  max-width: 100%;
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.placeLabel {
+  color: #000;
+  top: 7px;
+  font-size: 11px;
+  transform: translateY(0);
+  left: 20px;
+  position: absolute;
+}
+
+.Login-Button {
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 24px 0 12px;
+  max-width: 100%;
+  width: 100%;
+  padding: 16px;
+  background: #e50914;
+  color: #fff;
+  min-height: 37px;
+  min-width: 98px;
+  border: 0;
+}
+
+.LoginHelp {
+  display: flex;
+}
+
+.Ui-Input {
+  box-sizing: border-box;
+  font-size: 16px;
+  position: relative;
+  user-select: none;
+}
+
+.Login-Remember {
+  flex-grow: 1;
+  padding-left: 20px;
+  display: inline-block;
+  margin-bottom: -5px;
+}
+
+.Login-Remember input {
+  margin-right: 10px;
+}
+
+.LoginHelp .Login-Remember input[type=checkbox]+label {
+  padding: 0;
+}
+
+.LoginHelp .Login-Remember input[type=checkbox]+label:before {
+  background: #737373;
+  border: 0;
+  border-radius: 2px;
+  height: 16px;
+  left: -20px;
+  width: 16px;
+}
+
+.LoginHelp .Login-Remember input[type=checkbox]:checked+label:after {
+  color: #000;
+  font-size: 17px;
+  left: -19px;
+  top: 0;
+}
+
+.LoginHelp .Login-Remember-Text {
+  color: #b3b3b3;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.Ui-Input input[type=checkbox] {
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+}
+
+.Ui-Input input[type=checkbox]+label {
+  color: #333;
+  display: block;
+  line-height: 1.2;
+  padding: 6px 0;
+  position: relative;
+}
+
+.Ui-Input input[type=checkbox]+label:before, .Ui-Input input[type=radio]+label:before {
+  background-color: #fff;
+  border: 1px solid #b3b3b3;
+  content: "";
+  display: block;
+  left: -36px;
+  padding: 0;
+  position: absolute;
+  top: 2px;
+}
+
+.Ui-Input input[type=checkbox]:checked+label:after {
+  color: #0080ff;
+  content: "\2714";
+  font-family: nf-icon;
+  font-size: 28px;
+  left: -36px;
+  top: -2px;
+}
+
+.Ui-Input input[type=checkbox]+label:after, .Ui-Input input[type=radio]+label:after {
+  position: absolute;
+}
+
+.Ui-Input input[type=checkbox]+label, .Ui-Input input[type=radio]+label {
+  color: #333;
+  display: block;
+  line-height: 1.2;
+  padding: 6px 0;
+  position: relative;
+}
+
+.LoginHelp .LoginHelp-Link {
+  cursor: pointer;
+  flex: 0 0 1;
+  padding-top: 2px;
+}
+
+.LoginHelp .LoginHelp-Link{
+  color: #b3b3b3;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.Login-Api-Zone {
+  padding: 15px 0px 15px;
+  text-align: center;
+}
+
+.Login-Other .Login-Signup-Now {
+  color: #737373;
+  font-size: 16px;
+  font-weight: 400;
+  margin-top: 16px;
+}
+
+.Login-Other .Login-Signup-Now a {
+  color: #fff;
+}
+
+.Recaptcha-Terms-Of-Use {
+  color: #8c8c8c;
+  font-size: 13px;
+  margin-top: 11px;
+  position: relative;
+  text-align: left;
+}
+
+.Recaptcha-Terms-Of-Use-Disclosure {
+  height: 117px;
+}
