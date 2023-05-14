@@ -3605,7 +3605,7 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 }
 
 .plan-select-disclaimer-label {
-    align-items: start;
+    align-items: flex-start;
     display: flex
 }
 
