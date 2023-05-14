@@ -220,8 +220,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     font-family: nf-icon;
     font-style: normal;
     font-weight: 400;
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/nf-icon-v1-93.eot);
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/nf-icon-v1-93.eot?#iefix) format("embedded-opentype"),url(https://assets.nflxext.com/ffe/siteui/fonts/nf-icon-v1-93.woff) format("woff"),url(https://assets.nflxext.com/ffe/siteui/fonts/nf-icon-v1-93.ttf) format("truetype"),url(https://assets.nflxext.com/ffe/siteui/fonts/nf-icon-v1-93.svg#nf-icon-v1-93) format("svg")
 }
 
 [class*=" icon-"],[class^=icon-] {
@@ -2202,7 +2200,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     cursor: pointer;
     display: inline-block;
     font-weight: 400;
-    letter-spacing: .1px;
     line-height: 1em;
     text-align: center;
     text-decoration: none;
@@ -2690,7 +2687,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 .basic-spinner {
     animation: full-rotation 1s linear infinite;
     animation-direction: normal;
-    background-image: url(https://assets.nflxext.com/ffe/siteui/common/site-spinner-240.png);
     background-position: 50%;
     background-repeat: no-repeat;
     background-size: cover;
@@ -2706,10 +2702,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     display: none
 }
 
-.basic-spinner.basic-spinner-light {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/common/site-spinner-240-light.png)
-}
-
 .center-fixed {
     left: 50%;
     position: fixed;
@@ -2722,10 +2714,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     position: absolute;
     top: 50%;
     z-index: 1
-}
-
-.ua-ie-7 .basic-spinner,.ua-ie-8 .basic-spinner,.ua-ie-9 .basic-spinner {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/common/site-spinner-100.gif)
 }
 
 @keyframes full-rotation {
@@ -3030,7 +3018,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 }
 
 .message.whatsapp .message-headline:before {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/uma/WhatsApp_Logo.png);
     background-repeat: no-repeat;
     background-size: 2em 2em;
     content: "";
@@ -3129,7 +3116,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 }
 
 .slideshow .ss_container .ss_item {
-    background: transparent url(https://assets.nflxext.com/en_us/UmaTest/Benefits_Master_3.png) no-repeat 100% 0;
     box-sizing: border-box;
     display: inline-block;
     height: 140px;
@@ -3665,7 +3651,7 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 
 @media screen and (min-width: 500px) {
     .price-change-modal .nf-modal-content {
-        max-width:1000x;
+        max-width: 1000px;
         width: 70%
     }
 }
@@ -3893,7 +3879,7 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 
 @media screen and (min-width: 500px) {
     .content-parity-modal .nf-modal-content {
-        max-width:1000x;
+        max-width: 1000px;
         width: 70%
     }
 }
@@ -4633,32 +4619,9 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     width: 33px
 }
 
-.uma-promo-banner__icon.magenta {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/banner/S_Magenta.png)
-}
-
-.uma-promo-banner__icon.azure {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/banner/S_Azure.png)
-}
-
-.uma-promo-banner__icon.lime {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/banner/S_Lime.png)
-}
-
-.uma-promo-banner__icon.violet {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/banner/S_Violet.png)
-}
-
-.uma-promo-banner__icon.checkmark {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/banner/S_Checkmark_White.png);
-    background-size: 70%
-}
-
 .uma-promo-banner__title {
     width: max-content;
-    width: intrinsic;
     width: -moz-max-content;
-    width: -webkit-max-content
 }
 
 .promo-uma-modal.white .nf-modal-content {
@@ -4844,42 +4807,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 
 .promo-uma-modal.white .form-collect-phone-number .uma-cta-btn {
     margin: .25em .5em
-}
-
-.promo-uma-modal.magenta .nf-modal-content {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/modal/Magenta_modal.png);
-    border-radius: .3em
-}
-
-.promo-uma-modal.magenta .nf-modal-background {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/modal/Magenta_tex.png)
-}
-
-.promo-uma-modal.azure .nf-modal-content {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/modal/Azure_Modal.png);
-    border-radius: .3em
-}
-
-.promo-uma-modal.azure .nf-modal-background {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/modal/Azure_Tex.png)
-}
-
-.promo-uma-modal.lime .nf-modal-content {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/modal/L_Modal.png);
-    border-radius: .3em
-}
-
-.promo-uma-modal.lime .nf-modal-background {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/modal/L_Tex.png)
-}
-
-.promo-uma-modal.violet .nf-modal-content {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/modal/Violet_Modal.png);
-    border-radius: .3em
-}
-
-.promo-uma-modal.violet .nf-modal-background {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/acquisition/referral/promo/modal/Violet_Tex.png)
 }
 
 .promo-uma-modal.azure .akira-button-red,.promo-uma-modal.azure .akira-button-red.hover,.promo-uma-modal.azure .akira-button-red:hover,.promo-uma-modal.lime .akira-button-red,.promo-uma-modal.lime .akira-button-red.hover,.promo-uma-modal.lime .akira-button-red:hover,.promo-uma-modal.magenta .akira-button-red,.promo-uma-modal.magenta .akira-button-red.hover,.promo-uma-modal.magenta .akira-button-red:hover,.promo-uma-modal.violet .akira-button-red,.promo-uma-modal.violet .akira-button-red.hover,.promo-uma-modal.violet .akira-button-red:hover {
@@ -5394,7 +5321,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 }
 
 .nf-flag {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/common/icons/flags/flag-sprite-v5.png);
     background-repeat: no-repeat;
     display: block
 }
@@ -7839,48 +7765,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     font-family: GraphikTH,Netflix Sans,Helvetica Neue,Segoe UI,Roboto,Ubuntu,sans-serif
 }
 
-@font-face {
-    font-display: optional;
-    font-family: Netflix Sans;
-    font-weight: 100;
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Th.woff2) format("woff2"),url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Th.woff) format("woff")
-}
-
-@font-face {
-    font-display: optional;
-    font-family: Netflix Sans;
-    font-weight: 300;
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Lt.woff2) format("woff2"),url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Lt.woff) format("woff")
-}
-
-@font-face {
-    font-display: optional;
-    font-family: Netflix Sans;
-    font-weight: 400;
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Rg.woff2) format("woff2"),url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Rg.woff) format("woff")
-}
-
-@font-face {
-    font-display: optional;
-    font-family: Netflix Sans;
-    font-weight: 500;
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Md.woff2) format("woff2"),url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Md.woff) format("woff")
-}
-
-@font-face {
-    font-display: optional;
-    font-family: Netflix Sans;
-    font-weight: 700;
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Bd.woff2) format("woff2"),url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Bd.woff) format("woff")
-}
-
-@font-face {
-    font-display: optional;
-    font-family: Netflix Sans;
-    font-weight: 900;
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Blk.woff2) format("woff2"),url(https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Blk.woff) format("woff")
-}
-
 .billboard-row .billboard .billboard-motion {
     bottom: 0;
     left: 0;
@@ -9508,7 +9392,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 
 .lolomoRow:last-of-type .chunked-row-container {
     border-bottom: none;
-    padding-bottom: none
 }
 
 .chunked-row-container .chunked-row.four {
@@ -11012,7 +10895,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 }
 
 .lolomoRow.lolomoRow_title_card.highlight-lolomo-row-with-red-streams {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/experiments/quick/cw-highlight/streams_bkd_1920.png);
     background-repeat: round;
     background-size: contain;
     padding: 2vw 0 3vw
@@ -15498,7 +15380,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 }
 
 .common-sense .common-sense-icon {
-    background-image: url(https://assets.nflxext.com/ffe/siteui/akira/JawBone/common_sense_icon.png);
     background-repeat: no-repeat;
     display: inline-block;
     height: 24px;
@@ -17470,7 +17351,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 .profile-loading-spinner {
     animation-duration: .667s;
     animation-name: fadeIn;
-    animation-timing-function: easeInOutQuint
 }
 
 .profile-loading-spinner:before {
@@ -17478,7 +17358,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     animation-iteration-count: infinite;
     animation-name: rot;
     animation-timing-function: linear;
-    background-image: url(https://assets.nflxext.com/ffe/siteui/akira/profiles/spinner.png);
     content: "";
     display: block;
     height: 100%;
@@ -17706,7 +17585,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 }
 
 .maturity-rating-BBFC,.maturity-rating-GB {
-    background: transparent url(https://assets.nflxext.com/en_us/icons/maturity_ratings/bbfc_gbguidance_ratings_icons_sprite.png) no-repeat 0 0;
     background-position: 0 -320px;
     border: none;
     display: inline-block;
@@ -19391,7 +19269,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 }
 
 .PlayIcon {
-    background-image: url(https://assets.nflxext.com/en_us/buttons/play-button-114.png);
     background-position: bottom;
     background-repeat: no-repeat;
     background-size: contain;
@@ -20297,7 +20174,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 
 .nf-loading-spinner {
     animation: load_spinner .9s linear infinite;
-    background-image: url(https://assets.nflxext.com/en_us/pages/wiplayer/site-spinner.png);
     background-repeat: no-repeat;
     background-size: 100%;
     bottom: 1px;
@@ -21711,7 +21587,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 
 .nf-screen-logo {
     animation: fade-in .7s .3s forwards,scale-in 2.5s .3s forwards;
-    background-image: url(https://assets.nflxext.com/en_us/pages/wiplayer/logo_v3.svg);
     background-size: 100% /*!rtl:ignore*/;
     height: 7.66666667em;
     opacity: 0;
@@ -21731,7 +21606,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 
 .nf-screen-light {
     animation: fade-in .5s;
-    background-image: url(https://assets.nflxext.com/en_us/pages/wiplayer/directional-light.jpg);
     background-position: 50% /*!rtl:ignore*/;
     background-size: contain /*!rtl:ignore*/;
     height: 22.05555556em;
@@ -21742,7 +21616,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 
 .nf-screen-shadow {
     animation: fade-in .7s .3s forwards,scale-in 2.5s .3s forwards;
-    background-image: url(https://assets.nflxext.com/en_us/pages/wiplayer/shadow.png);
     background-position: 50%;
     background-repeat: no-repeat;
     background-size: 100%;
@@ -21804,7 +21677,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 }
 
 .nfp .player-loading .metadata.logo,.watch-video .player-loading .metadata.logo {
-    background-image: url(https://assets.nflxext.com/en_us/pages/wiplayer/logo_v3.svg);
     background-repeat: no-repeat;
     background-size: 8em 2.33em;
     min-width: 8em;
@@ -22450,7 +22322,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 
 .BranchingInteractiveScene--loader .spinner {
     animation: branching_load_spinner .9s linear infinite;
-    background-image: url(https://assets.nflxext.com/en_us/pages/wiplayer/site-spinner.png);
     background-size: 100%;
     display: inline-block;
     height: 7vh;
@@ -23117,7 +22988,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     align-items: center;
     display: flex;
     flex-direction: row;
-    flex-wrap: no-wrap;
     justify-content: center
 }
 
@@ -24848,14 +24718,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     font-display: optional;
     font-family: NKufi;
     font-weight: 400;
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/kufi/v4/HandsetSansKufiArabic-Regular.woff2) format("woff2"),url(https://assets.nflxext.com/ffe/siteui/fonts/kufi/v4/HandsetSansKufiArabic-Regular.woff) format("woff")
-}
-
-@font-face {
-    font-display: optional;
-    font-family: NKufi;
-    font-weight: 500;
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/kufi/v4/HandsetSansKufiArabic-Bold.woff2) format("woff2"),url(https://assets.nflxext.com/ffe/siteui/fonts/kufi/v4/HandsetSansKufiArabic-Bold.woff) format("woff")
 }
 
 .nkufi-font-loaded {
@@ -24866,14 +24728,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     font-display: optional;
     font-family: GraphikTH;
     font-weight: 400;
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/graphik/v2/GraphikTH-Medium.woff2) format("woff2"),url(https://assets.nflxext.com/ffe/siteui/fonts/graphik/v2/GraphikTH-Medium.woff) format("woff")
-}
-
-@font-face {
-    font-display: optional;
-    font-family: GraphikTH;
-    font-weight: 500;
-    src: url(https://assets.nflxext.com/ffe/siteui/fonts/graphik/v2/GraphikTH-Bold.woff2) format("woff2"),url(https://assets.nflxext.com/ffe/siteui/fonts/graphik/v2/GraphikTH-Bold.woff) format("woff")
 }
 
 .graphik-font-loaded {
@@ -25915,10 +25769,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 
 .t_64b453 .kidsPage .jawBoneContainer .listMeta p {
     font-weight: 500
-}
-
-.t_64b453 .kidsPage .jawBoneContainer .background:not(.fullbleed) .nav-shadow {
-    background: url(https://assets.nflxext.com/ffe/siteui/akira/JawBone/kids-nav-shadow.png) no-repeat center 100%
 }
 
 @media screen and (max-width: 499px) {
