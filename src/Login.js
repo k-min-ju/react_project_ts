@@ -7,9 +7,9 @@ import {useNavigate} from "react-router-dom";
 
 function Login() {
     useEffect( () => {
-        if(common.isNotEmpty(sessionStorage.getItem("access_token"))) {
-            navigateBrowse();
-        }
+        // if(common.isNotEmpty(sessionStorage.getItem("access_token"))) {
+        //     navigateBrowse();
+        // }
     }, []);
 
     const navigate = useNavigate();
