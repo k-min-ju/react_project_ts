@@ -1,9 +1,8 @@
 import { useGoogleLogin } from "@react-oauth/google";
-import * as common from "../common/commonFunction";
 
 const googleLoginButton = () => {
     const loginSuccess = (res) => {
-        if(common.isNotEmpty(res.access_token)) {
+        if(window.common.isNotEmpty(res.access_token)) {
             sessionStorage.setItem("access_token", res.access_token);
             window.location.href = "/main";
         }
