@@ -1,9 +1,10 @@
 import Login from "./Login.js";
 import Browse from "./Browse.js";
 import {Route, Routes} from "react-router-dom";
+import * as common from "./common/commonFunction.js";
+window.common = common;
 
 function App() {
-
   return (
 
     <div className="App">

@@ -2,12 +2,11 @@ import "./LoginMain.css";
 import GoogleLoginButton from './login/GoogleLogin.js';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import {useEffect} from "react";
-import * as common from "./common/commonFunction";
 import {useNavigate} from "react-router-dom";
 
 function Login() {
     useEffect( () => {
-        // if(common.isNotEmpty(sessionStorage.getItem("access_token"))) {
+        // if(window.common.isNotEmpty(sessionStorage.getItem("access_token"))) {
         //     navigateBrowse();
         // }
     }, []);
