@@ -3,6 +3,14 @@ const path = require('path');
 // plugins
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+
+module.exports = {
+    // Other rules...
+    plugins: [
+        new NodePolyfillPlugin()
+    ]
+}
 
 module.exports = {
     entry: {
