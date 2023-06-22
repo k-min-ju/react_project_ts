@@ -4,8 +4,8 @@ function SpecialMovie() {
         <span className="volatile-billboard-animations-container">
             <div className="billboard-row" role="region" aria-label="특별 소개 콘텐츠">
                 <div className="ptrack-container billboard-presentation-tracking">
-                    <div className="billboard-presentation-tracking ptrack-content" data-ui-tracking-context="" data-tracking-uuid="">
-                        <div className="billboard-presentation-tracking ptrack-content" data-ui-tracking-context="" data-tracking-uuid="">
+                    <div className="billboard-presentation-tracking ptrack-content">
+                        <div className="billboard-presentation-tracking ptrack-content">
                             <div className="billboard billboard-pane billboard-originals trailer-billboard video-playing">
                                 <div className="billboard-motion dismiss-mask dismiss-static">
                                     <div className="nfp nf-player-container notranslate inactive NFPlayer" tabIndex="-1">
@@ -74,8 +74,12 @@ function SpecialMovie() {
                                             <span className="maturity-rating ">
                                                 <span className="maturity-graphic">
                                                     <svg id="maturity-rating-977" viewBox="0 0 100 100" className="svg-icon svg-icon-maturity-rating-977 ">
+                                                        {/* 15세*/}
                                                         <path id="Fill---Orange" fill="#CD6D34" d="M88.727 100H11.27C5.05 100 0 94.952 0 88.727V11.273C0 5.047 5.05 0 11.27 0h77.457C94.952 0 100 5.047 100 11.273v77.454C100 94.952 94.952 100 88.727 100"></path>
                                                         <path id="15" fill="#FFFFFE" d="M36.876 15.482v68.651H21.509v-49.51h-5.484l7.097-19.141h13.754zm45.46 0V28.87H57.175v10.063h24.08c.845 0 1.533.687 1.533 1.534v42.13c0 .845-.688 1.532-1.534 1.532H43.616a1.533 1.533 0 01-1.533-1.533V62.202H57v8.988h10.874V52.052h-25.79v-36.57h40.254z"></path>
+                                                        {/* 12세*/}
+                                                        {/*<path id="Fill---Yellow" fill="#DFB039" d="M88.724 100h-77.45C5.049 100 0 94.954 0 88.728V11.274C0 5.048 5.048 0 11.275 0h77.449C94.949 0 100 5.048 100 11.274v77.454C100 94.954 94.95 100 88.724 100"></path>*/}
+                                                        {/*<path id="12" fill="#000" d="M36.92 15.484v68.647H21.553V34.62h-5.48l7.097-19.136h13.75zm44.288 0c.848 0 1.535.687 1.535 1.533v18.144c0 1.018-.044 1.885-.133 2.605a8.067 8.067 0 01-.493 1.975 14.48 14.48 0 01-.9 1.843c-.362.631-.84 1.363-1.44 2.204L60.643 70.653h21.923v13.394H41.59v-10.07l26.152-37.29V28.42H57.136v9.345H42.127V17.017c0-.846.687-1.533 1.534-1.533z"></path>*/}
                                                     </svg>
                                                 </span>
                                             </span>

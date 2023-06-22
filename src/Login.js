@@ -1,20 +1,71 @@
 import "./LoginMain.css";
 import GoogleLoginButton from './login/GoogleLogin.js';
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {createBrowserHistory} from "history";
+import googleLogOut from "./login/GoogleLogOut.js";
 
 function Login() {
+
+    useEffect(() => {
+        const history = createBrowserHistory();
+        const listenBackEvent = () => {
+            // 뒤로가기 할 때 수행할 동작
+            const url = process.env.REACT_APP_NETFLIX_URL.split("|");
+            const validUrl = url.filter((url) => url == location.origin);
+            const loginType = sessionStorage.getItem("loginType");
+            if(loginType == 'G' && validUrl.length > 0 && (location.pathname == "/" || location.pathname == "login")) {
+                // 구글 로그아웃 처리
+                googleLogOut();
+            }
+        };
+
+        const unlistenHistoryEvent = history.listen(({ action }) => {
+            // 브라우저 뒤로가기, 앞으로가기
+            if (action === "POP") {
+                listenBackEvent();
+            }
+        });
+
+        return window.addEventListener("popstate", unlistenHistoryEvent);
+    }, []);
+
     useEffect( () => {
-        // if(window.common.isNotEmpty(sessionStorage.getItem("access_token"))) {
-        //     navigateBrowse();
-        // }
+        if(localStorage.getItem('rememberId') == 'Y') {
+            document.getElementById('rememberId').checked = true;
+        }
+        if(window.common.isNotEmpty(localStorage.getItem('loginId'))) {
+            document.getElementById("loginId").value = localStorage.getItem("loginId");
+        }
     }, []);
 
     const navigate = useNavigate();
+    let [inputId, setInputId] = useState();
+    let [inputPw, setInputPw] = useState();
+    let [idError, setIdError] = useState(false);
+    let [pwError, setPwError] = useState(false);''
 
-    const navigateBrowse = () => {
-        navigate("/Browse");
+    const doLogin = () => {
+        const rememberId = document.getElementById('rememberId').checked;
+        const inputId = document.getElementById("loginId");
+        const inputPw = document.getElementById("passWord");
+
+        // 로그인 정보 저장
+        if(rememberId) {
+            if(window.common.isEmpty(localStorage.getItem('rememberId'))) localStorage.setItem('rememberId', 'Y');
+            localStorage.setItem("loginId", inputId.value);
+        }
+        else {
+            localStorage.removeItem('rememberId');
+            localStorage.removeItem("loginId");
+        }
+        
+        // 로그인
+        if(window.common.isNotEmpty(inputId.value) && window.common.isNotEmpty(inputPw.value)) {
+            sessionStorage.setItem('loginType', 'N');
+            navigate('/Browse');
+        }
     };
 
     return (
@@ -30,19 +81,29 @@ function Login() {
                     <div className="Login-Content Login-Form Login-Form-Signup">
                         <div className="Login-Main">
                             <h1>로그인</h1>
+                            {/*<div data-uia="error-message-container" className="ui-message-container ui-message-error" role="alert">*/}
+                            {/*    <div className="ui-message-icon"></div>*/}
+                            {/*    <div data-uia="text" className="ui-message-contents"><b>비밀번호를 잘못 입력하셨습니다. </b> 다시 입력하시거나 <a href="/loginHelp">비밀번호를 재설정</a>하세요.</div>*/}
+                            {/*</div>*/}
                             <div className="LoginId">
                                 <div>
-                                    <input id="loginId" type="text" className='LoginTextField' />
+                                    <IdInput value={inputId} setIdError={setIdError}/>
                                     <label className="placeLabel">이메일 주소 또는 전화번호</label>
                                 </div>
+                                {
+                                    idError ? <div id="" className="inputError" data-uia="login-field+error">정확한 이메일 주소나 전화번호를 입력하세요.</div> : null
+                                }
                             </div>
                             <div className="LoginPassWord">
                                 <div>
-                                    <input id="passWord" type="text" className='LoginTextField' />
+                                    <PwInput value={inputPw} setPwError={setPwError} />
                                     <label className="placeLabel">비밀번호</label>
                                 </div>
                             </div>
-                            <button className="Login-Button" type="submit" onClick={navigateBrowse}>로그인</button>
+                            {
+                                pwError ? <div id="" className="inputError" data-uia="password-field+error">비밀번호는 4~60자 사이여야 합니다.</div> : null
+                            }
+                            <button className="Login-Button" type="submit" onClick={doLogin}>로그인</button>
                             <div className="LoginHelp">
                                 <div className="Ui-Input Login-Remember">
                                     <input type="checkbox" className="LoginCheckbox" id="rememberId"/>
@@ -55,7 +116,7 @@ function Login() {
                             </div>
                             <div className="Login-Api-Zone">
                                 <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_API_KEY}>
-                                    <GoogleLoginButton/>
+                                    <GoogleLoginButton navigate={navigate}/>
                                 </GoogleOAuthProvider>
                             </div>
                         </div>
@@ -75,4 +136,40 @@ function Login() {
         </>
     )
 }
+
+const IdInput = (props) => {
+
+    const loginIdBlur = () => {
+        let inputId = document.getElementById("loginId");
+        if(window.common.isEmpty(inputId.value)) {
+            props.setIdError(true);
+        }
+        else {
+            props.setIdError(false);
+        }
+    }
+
+    return (
+        <input id="loginId" type="text" className='LoginTextField' value={props.value} onBlur={loginIdBlur}/>
+    )
+}
+
+const PwInput = (props) => {
+
+    const loginPwBlur = () => {
+        let inputPw = document.getElementById("passWord");
+        if(window.common.isEmpty(inputPw.value)) {
+            props.setPwError(true);
+        }
+        else {
+            props.setPwError(false);
+        }
+    }
+
+    return (
+        <input id="passWord" type="text" className='LoginTextField' value={props.value} onBlur={loginPwBlur}/>
+    )
+}
+
+
 export default Login;

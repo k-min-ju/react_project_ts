@@ -13,7 +13,6 @@ let slidesPer4 = 3;
 
 function LastYearMovie(props) {
     if(props.movieList.length == 0) return;
-    console.log(111)
     let movieList = [...props.movieList];
 
     const pagination = {

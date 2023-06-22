@@ -13,7 +13,6 @@ let slidesPer4 = 3;
 
 function RecentReleaseMovie(props) {
     if(props.movieList.length == 0) return;
-    console.log(222)
     let movieList = [...props.movieList];
 
     const pagination = {
