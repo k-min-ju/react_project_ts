@@ -6988,7 +6988,7 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     line-height: 21px;
     opacity: 0;
     position: absolute;
-    top: 71px
+    top: 71px;
 }
 
 .sub-menu.theme-lakira.use-scroll {
@@ -7783,7 +7783,6 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
 .billboard-row .billboard .billboard-motion.dismiss-static .static-image {
     -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
     filter: alpha(opacity=0);
-    opacity: 0
 }
 
 .billboard-row .billboard .billboard-motion .audio-btn.global-supplemental-audio-toggle .nf-svg-button {
@@ -10018,7 +10017,7 @@ b,h1,h2,h3,h4,h5,h6,optgroup,strong {
     position: absolute;
     right: 0;
     top: 52px;
-    width: 220px
+    width: 220px;
 }
 
 @media screen and (max-width: 950px) {
@@ -27159,3 +27158,8 @@ a {
     height: 2em;
     font-weight: 800;
 }
+
+/*.account-menu-item:hover .sub-menu.theme-lakira {*/
+/*    opacity: 1;*/
+/*    transition-duration: 900ms;*/
+/*}*/

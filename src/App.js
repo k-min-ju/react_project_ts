@@ -2,10 +2,10 @@ import Login from "./Login.js";
 import Browse from "./Browse.js";
 import {Route, Routes} from "react-router-dom";
 import * as common from "./common/commonFunction.js";
-import {createContext} from "react";
+// import {createContext} from "react";
 window.common = common;
 
-export let Context = createContext();
+// export let Context = createContext();
 
 function App() {
     return (
@@ -15,11 +15,12 @@ function App() {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/Browse" element={
-                    <Context.Provider value={{}}>
-                        <Browse />
-                    </Context.Provider>
-                }
+                <Route path="/Browse" element={<Browse />} />
+                {/*<Route path="/Browse" element={*/}
+                {/*    <Context.Provider value={{}}>*/}
+                {/*        <Browse />*/}
+                {/*    </Context.Provider>*/}
+                {/*}*/}
                 />
             </Routes>
         </div>

@@ -1,16 +1,20 @@
 import { useGoogleLogin } from "@react-oauth/google";
 
-const googleLoginButton = () => {
+let isGoogleLogin = false;
+export {isGoogleLogin};
+
+
+const googleLoginButton = (props) => {
     const loginSuccess = (res) => {
         if(window.common.isNotEmpty(res.access_token)) {
-            sessionStorage.setItem("access_token", res.access_token);
-            window.location.href = "/main";
+            sessionStorage.setItem("accessToken", res.access_token);
+            sessionStorage.setItem("loginType", "G");
+            props.navigate('/Browse');
         }
-        console.log(res)
     }
 
     const loginError = () => {
-        alert("로그인 실패");
+        console.log("로그인 실패");
     }
 
     const googleSocialLogin = useGoogleLogin({

@@ -161,6 +161,13 @@ a {
   flex-grow: 1;
 }
 
+.Login-Main h1 {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 500;
+  margin-bottom: 28px;
+}
+
 .LoginId {
   max-width: 100%;
   position: relative;
@@ -182,7 +189,6 @@ a {
 .LoginPassWord {
   max-width: 100%;
   position: relative;
-  padding-bottom: 16px;
 }
 
 .placeLabel {
@@ -370,4 +376,25 @@ a {
   margin-top: 2px;
   width: 85%;
   text-align: center;
+}
+
+.inputError {
+  color: #e87c03;
+  margin-bottom: -6px;
+  padding: 6px 3px;
+  font-size: 13px;
+}
+
+.ui-message-container {
+  background: #e87c03;
+  border-radius: 4px;
+  font-size: 14px;
+  margin: 0 0 16px;
+}
+
+.ui-message-contents {
+  padding: 10px 20px;
+  color: #fff;
+  display: table-cell;
+  vertical-align: middle;
 }
