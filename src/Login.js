@@ -9,6 +9,7 @@ import googleLogOut from "./login/GoogleLogOut.js";
 function Login() {
 
     useEffect(() => {
+        // 브라우저 뒤로가기 제어
         const history = createBrowserHistory();
         const listenBackEvent = () => {
             // 뒤로가기 할 때 수행할 동작
@@ -44,8 +45,9 @@ function Login() {
     let [inputId, setInputId] = useState();
     let [inputPw, setInputPw] = useState();
     let [idError, setIdError] = useState(false);
-    let [pwError, setPwError] = useState(false);''
+    let [pwError, setPwError] = useState(false);
 
+    // 로그인
     const doLogin = () => {
         const rememberId = document.getElementById('rememberId').checked;
         const inputId = document.getElementById("loginId");
@@ -59,6 +61,23 @@ function Login() {
         else {
             localStorage.removeItem('rememberId');
             localStorage.removeItem("loginId");
+        }
+
+        // validation check
+        if(window.common.isEmpty(inputId.value)) {
+            setIdError(true);
+            return false;
+        }
+        else {
+            setIdError(false);
+        }
+
+        if(window.common.isEmpty(inputPw.value) || !(inputPw.value.length > 3 && inputPw.value.length < 61)) {
+            setPwError(true);
+            return false;
+        }
+        else {
+            setPwError(false);
         }
         
         // 로그인
@@ -167,7 +186,7 @@ const PwInput = (props) => {
     }
 
     return (
-        <input id="passWord" type="text" className='LoginTextField' value={props.value} onBlur={loginPwBlur}/>
+        <input id="passWord" type="password" className='LoginTextField' value={props.value} onBlur={loginPwBlur}/>
     )
 }
 
