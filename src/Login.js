@@ -106,7 +106,7 @@ function Login() {
                             {/*</div>*/}
                             <div className="LoginId">
                                 <div>
-                                    <IdInput value={inputId} setIdError={setIdError}/>
+                                    <IdInput value={inputId} setIdError={setIdError} doLogin={doLogin} />
                                     <label className="placeLabel">이메일 주소 또는 전화번호</label>
                                 </div>
                                 {
@@ -115,7 +115,7 @@ function Login() {
                             </div>
                             <div className="LoginPassWord">
                                 <div>
-                                    <PwInput value={inputPw} setPwError={setPwError} />
+                                    <PwInput value={inputPw} setPwError={setPwError} doLogin={doLogin} />
                                     <label className="placeLabel">비밀번호</label>
                                 </div>
                             </div>
@@ -168,8 +168,15 @@ const IdInput = (props) => {
         }
     }
 
+    // 엔터키로 로그인
+    const handleOnKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            props.doLogin();
+        }
+    };
+
     return (
-        <input id="loginId" type="text" className='LoginTextField' value={props.value} onBlur={loginIdBlur}/>
+        <input id="loginId" type="text" className='LoginTextField' value={props.value} onBlur={loginIdBlur} onKeyDown={handleOnKeyDown} />
     )
 }
 
@@ -185,8 +192,15 @@ const PwInput = (props) => {
         }
     }
 
+    // 엔터키로 로그인
+    const handleOnKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            props.doLogin();
+        }
+    };
+
     return (
-        <input id="passWord" type="password" className='LoginTextField' value={props.value} onBlur={loginPwBlur}/>
+        <input id="passWord" type="password" className='LoginTextField' value={props.value} onBlur={loginPwBlur} onKeyDown={handleOnKeyDown} />
     )
 }
 
