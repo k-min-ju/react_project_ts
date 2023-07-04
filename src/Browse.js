@@ -117,8 +117,21 @@ function Browse() {
             document.removeEventListener("mousedown", handleOutside);
         };
 
+        // 스크롤 감지
+        window.addEventListener("scroll", handleScroll);
+
     }, []);
 
+    const handleScroll = () => {
+        if(document.documentElement.scrollTop > 0) {
+            document.querySelector('.pinning-header-container').style = 'background: rgb(20,20,20);';
+            document.querySelector('.main-header').style = 'background-color: rgb(20,20,20);';
+        }
+        else {
+            document.querySelector('.pinning-header-container').style = 'background: transparent;';
+            document.querySelector('.main-header').style = '';
+        }
+    }
 
     return (
         <>
