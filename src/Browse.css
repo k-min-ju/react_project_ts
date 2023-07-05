@@ -27226,7 +27226,8 @@ a {
 
 .video-playing .titleWrapper {
     transform-origin: left bottom;
-    transform: scale(0.6) translate3d(0px, 136.667px, 0px);
+    /*transform: scale(0.6) translate3d(0px, 136.667px, 0px);*/
+    transform: scale(0.6) translate3d(0px, 100px, 0px);
     transition-duration: 1300ms;
     transition-delay: 5000ms;
 }
