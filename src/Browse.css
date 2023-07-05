@@ -27223,3 +27223,56 @@ a {
 .active > .searchTab {
     display: none;
 }
+
+.video-playing .titleWrapper {
+    transform-origin: left bottom;
+    transform: scale(0.6) translate3d(0px, 136.667px, 0px);
+    transition-duration: 1300ms;
+    transition-delay: 5000ms;
+}
+
+.video-playing .info-wrapper {
+    transform: translate3d(0px, 82px, 0px);
+    transition-duration: 1300ms;
+    transition-delay: 5000ms;
+}
+
+.video-playing .info-wrapper-fade {
+    opacity: 0;
+    transition-duration: 500ms;
+    transition-delay: 5000ms;
+}
+
+.titleWrapper {
+    transform-origin: left bottom;
+    transform: scale(1) translate3d(0px, 0px, 0px);
+    transition-duration: 1300ms;
+    transition-delay: 0ms;
+}
+
+.info-wrapper {
+    transform: translate3d(0px, 0px, 0px);
+    transition-duration: 1300ms;
+    transition-delay: 0ms;
+    opacity: 1;
+}
+
+.info-wrapper-fade {
+    opacity: 1;
+    transition-duration: 600ms;
+    transition-delay: 200ms;
+}
+
+/*.plotText {*/
+/*    transform: translate3d(0px, 0px, 0px);*/
+/*    transition-duration: 1300ms;*/
+/*    transition-delay: 0ms;*/
+/*    opacity: 1;*/
+/*}*/
+
+/*.video-playing {*/
+
+/*}*/
+/*opacity: 1;*/
+/*transition-duration: 600ms;*/
+/*transition-delay: 200ms;*/

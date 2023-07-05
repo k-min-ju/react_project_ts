@@ -5,7 +5,7 @@ function SpecialMovie(props) {
     let movieList = [...props.movieList];
     let movie = movieList[0];
 
-    const muteBtn = () => {
+    const muteBtnClick = () => {
         const movie = document.getElementById("specialMovie");
         if(props.muted == true) {
             movie.muted = false;
@@ -17,6 +17,14 @@ function SpecialMovie(props) {
             props.setMuted(true);
             // localStorage.setItem('specialMovieMuted', "ON");
         }
+    }
+
+    const movieEnded = () => {
+        props.setIsMovieStart(false);
+        props.setIsReplay(true);
+        let $element = document.querySelector('.trailer-billboard');
+        $element.classList.toggle('video-playing')
+        $element.children[0].classList.toggle('dismiss-static', 'dismiss-mask');
     }
 
     return(
@@ -32,7 +40,7 @@ function SpecialMovie(props) {
                                             <div className="VideoContainer VideoContainer--use-element-dimensions" aria-hidden="true" role="presentation" data-uia="player" data-videoid="81636983" style={{height: '100%'}}>
                                                 <div style={{position: 'relative', width: '100%', height: '100%', overflow: 'hidden'}}>
                                                     <div style={{position: 'relative', width: '100%', height: '100%', overflow: 'hidden'}}>
-                                                        <video id="specialMovie" muted playsInline ref={props.specialMovieFunc} style={{height: '100%'}}>
+                                                        <video id="specialMovie" muted playsInline ref={props.specialMovieFunc} style={{height: '100%'}} onEnded={movieEnded}>
                                                             <source src="https://www.kmdb.or.kr/trailer/play/MK059186_P02.mp4" type="video/mp4" />
                                                         </video>
                                                         <div className="player-timedtext" style={{display: 'none', direction: 'ltr'}}></div>
@@ -74,8 +82,8 @@ function SpecialMovie(props) {
                                             <div className="embedded-components button-layer">
                                                 <span className="ActionButtons">
                                                     {
-                                                        props.isMovieStart ? <MovieStart muted={props.muted} muteBtn={muteBtn} />: props.isReplay
-                                                                           ? <Replay setIsMovieStart={props.setIsMovieStart} setIsReplay={props.setIsReplay}/> : null
+                                                        props.isMovieStart ? <MuteBtn muted={props.muted} muteBtnClick={muteBtnClick} />: props.isReplay
+                                                                           ? <Replay setMuted={props.setMuted} setIsMovieStart={props.setIsMovieStart} setIsReplay={props.setIsReplay} /> : null
                                                     }
                                                 </span>
                                                 <span className="maturity-rating ">
@@ -91,25 +99,22 @@ function SpecialMovie(props) {
                                     <div className="fill-container">
                                         <div className="info meta-layer">
                                             <div className="logo-and-text meta-layer">
-                                                <div className="titleWrapper" style={{transformOrigin: 'left bottom', transform: 'scale(1) translate3d(0px, 0px, 0px)', transitionDuration: '1300ms', transitionDelay: '0ms'}}>
+                                                <div className="titleWrapper">
                                                     <div className="billboard-title">
-                                                        {/*<img alt="Queen Cleopatra" className="title-logo" src="http://occ-0-993-2218.1.nflxso.net/dnm/api/v6/LmEnxtiAuzezXBjYXPuDgfZ4zZQ/AAAABRZySGZnShksIyikzJJvzCOEGOzb315hxl8vGI7F0_IE1sVAD4FPtJHeJLrc_EctoJK6LaP07sImaw_4Lk3M8Y5xua2c-axx6SLC-U5XSfth-qMYwKWx2y8uIJ6UvGMQoEbG_dNPMtrAXk8gAQ_3FPcY9blFbK_9t9f4Lhto4faN8Es8i_nG9A.webp?r=4cb" title="Queen Cleopatra" />*/}
-                                                        {/*<img alt="그 여름" className="title-logo" src={logo} title="그 여름" />*/}
-                                                        {/*<img alt="그 여름" className="title-logo" src={logo2} title="그 여름" />*/}
-                                                        {/*<img alt="그 여름" className="title-logo" src={logo3} title="그 여름" />*/}
+                                                        <img alt="Queen Cleopatra" className="title-logo" src="http://occ-0-993-2218.1.nflxso.net/dnm/api/v6/LmEnxtiAuzezXBjYXPuDgfZ4zZQ/AAAABRZySGZnShksIyikzJJvzCOEGOzb315hxl8vGI7F0_IE1sVAD4FPtJHeJLrc_EctoJK6LaP07sImaw_4Lk3M8Y5xua2c-axx6SLC-U5XSfth-qMYwKWx2y8uIJ6UvGMQoEbG_dNPMtrAXk8gAQ_3FPcY9blFbK_9t9f4Lhto4faN8Es8i_nG9A.webp?r=4cb" title="Queen Cleopatra" />
                                                     </div>
                                                 </div>
-                                                <div className="info-wrapper" style={{transform: 'translate3d(0px, 0px, 0px)', transitionDuration: '1300ms', transitionDelay: '0ms', opacity: '1'}}>
-                                                    <div className="info-wrapper-fade" style={{opacity: '1', transitionDuration: '600ms', transitionDelay: '200ms'}}>
+                                                <div className="info-wrapper">
+                                                    <div className="info-wrapper-fade">
                                                         <div className="episode-title-container"></div>
                                                         <div className="synopsis-fade-container">
                                                             <div className="synopsis no-supplemental">
-                                                                {/*<div className="ptrack-content">이집트의 마지막 파라오 클레오파트라. 왕좌와 가족, 그리고 왕조의 유산을 지키기 위해 싸웠던 그녀의 생애를 재연과 전문가 인터뷰를 통해 만나보는 다큐드라마.</div>*/}
-                                                                <div className="ptrack-content">
-                                                                    {
-                                                                        movie.plots.plot[0].plotText
-                                                                    }
-                                                                </div>
+                                                                <div className="ptrack-content plotText">이집트의 마지막 파라오 클레오파트라. 왕좌와 가족, 그리고 왕조의 유산을 지키기 위해 싸웠던 그녀의 생애를 재연과 전문가 인터뷰를 통해 만나보는 다큐드라마.</div>
+                                                                {/*<div className="ptrack-content">*/}
+                                                                {/*    {*/}
+                                                                {/*        movie.plots.plot[0].plotText*/}
+                                                                {/*    }*/}
+                                                                {/*</div>*/}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -197,11 +202,11 @@ const RatingViewer = (props) => {
 }
 
 //
-function MovieStart(props) {
+function MuteBtn(props) {
     return (
         <>
             <div className="global-supplemental-audio-toggle audio-btn button-layer">
-                <button aria-label="음성 켜기"className="color-supplementary hasIcon round ltr-uhap25" type="button" onClick={props.muteBtn} id="specialMovieMuteBtn">
+                <button aria-label="음성 켜기"className="color-supplementary hasIcon round ltr-uhap25" type="button" onClick={props.muteBtnClick} id="specialMovieMuteBtn">
                     <div className="ltr-1ol9m1e">
                         <div className="small ltr-1evcx25" role="presentation">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="Hawkins-Icon Hawkins-Icon-Standard" data-name="VolumeHigh">
@@ -222,8 +227,9 @@ function MovieStart(props) {
 function Replay(props) {
     const replayBtn = () => {
         document.getElementById("specialMovie").play();
-        props.setIsMovieStart(true);
-        props.setIsReplay(false);
+        // props.setIsMovieStart(true);
+        // props.setIsReplay(false);
+        specialMoviePlay(props.setMuted, props.setIsMovieStart, 'Y');
     }
 
     return (
@@ -239,6 +245,39 @@ function Replay(props) {
             </button>
         </>
     )
+}
+
+export function specialMoviePlay(setMuted, setIsMovieStart, replay) {
+    // 메인 이미지 걷어낸 후 동영상 재생
+    let $element = document.querySelector('.trailer-billboard');
+    $element.classList.toggle('video-playing')
+    $element.children[0].classList.toggle('dismiss-static', 'dismiss-mask');
+    $element.children[0].children[0].className = 'nfp nf-player-container notranslate inactive NFPlayer';
+
+    // chrome 자동 재생 정책 > 음소거를 해야만 autoPlay 사용가능(동영상 자동 재생 시 원치 않는 사운드 재생 방지)
+    // specialMovie컴포넌트 로드 후 동영상을 강제로 재생시키고 사운드 설정.
+    // 동영상 강제 재생 후 사운드ON이 chrome 정책상 불가
+    const $specialMovie = document.getElementById("specialMovie");
+    // 사운드OFF
+    if (localStorage.getItem('specialMovieMuted') == "ON") {
+        $specialMovie.play();
+        setMuted(true);
+    }
+    // 사운드ON
+    // else if(localStorage.getItem('specialMovieMuted') == "OFF") {
+    //     $specialMovie.muted = true;
+    //     $specialMovie.play();
+    //     $specialMovie.muted = false;
+    //     setMuted(false);
+    // }
+    else {
+        $specialMovie.play();
+        if(replay != 'Y') {
+            $specialMovie.muted = true;
+            setMuted(true);
+        }
+    }
+    setIsMovieStart(true);
 }
 
 export default React.memo(SpecialMovie);

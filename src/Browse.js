@@ -2,7 +2,7 @@ import "./Browse.css";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import googleLogOut from "./login/GoogleLogOut.js";
-import SpecialMovie from "./movie/specialMovie.js";
+import SpecialMovie, {specialMoviePlay} from "./movie/specialMovie.js";
 import LastYearMovie from "./movie/lastYearMovie.js";
 import RecentReleaseMovie from "./movie/recentReleaseMovie.js";
 import AnimationMovie from "./movie/animationMovie.js";
@@ -35,10 +35,8 @@ function Browse() {
     let [isMovieStart, setIsMovieStart] = useState(false);
     let [isReplay, setIsReplay] = useState(false);
     let [muted, setMuted] = useState(true);
-
     let [specialMovieFunc, setSpecialMovieFunc] = useState();
     let specialMovieInit;
-
     const searchRef = useRef(null);
 
     useEffect(() => {
@@ -60,47 +58,10 @@ function Browse() {
         getSFMovie(dispatch);
 
         specialMovieInit = () => {
-            // specialMovie 재생 시 사운드OFF 기본 값 설정
-            if(window.common.isEmpty(localStorage.getItem('specialMovieMuted'))) localStorage.setItem('specialMovieMuted', "ON");
             setTimeout(() => {
-                // 메인 이미지 걷어낸 후 동영상 재생
-                let $element = document.querySelector('.trailer-billboard');
-                $element.classList.add('video-playing')
-                $element.children[0].classList.add('dismiss-static', 'dismiss-mask');
-                $element.children[0].children[0].className = 'nfp nf-player-container notranslate inactive NFPlayer';
-
-                // chrome 자동 재생 정책 > 음소거를 해야만 autoPlay 사용가능(동영상 자동 재생 시 원치 않는 사운드 재생 방지)
-                // specialMovie컴포넌트 로드 후 동영상을 강제로 재생시키고 사운드 설정.
-                // 동영상 강제 재생 후 사운드ON이 chrome 정책상 불가
-                const $specialMovie = document.getElementById("specialMovie");
-                // 사운드OFF
-                if(localStorage.getItem('specialMovieMuted') == "ON") {
-                    $specialMovie.play();
-                    setMuted(true);
-                }
-                // 사운드ON
-                // else if(localStorage.getItem('specialMovieMuted') == "OFF") {
-                //     $specialMovie.muted = true;
-                //     $specialMovie.play();
-                //     $specialMovie.muted = false;
-                //     setMuted(false);
-                // }
-                else {
-                    $specialMovie.muted = true;
-                    $specialMovie.play();
-                    setMuted(true);
-                }
-                setIsMovieStart(true);
+                // 특별 소개 영화 재생
+                specialMoviePlay(setMuted, setIsMovieStart, 'N');
             }, 2500);
-
-            setInterval(function(){
-                // specialMovie 영상 종료 후 실행할 함수
-                if(document.getElementById("specialMovie").ended) {
-                    // 음소거 버튼 hide후 리플레이 버튼 show
-                    setIsMovieStart(false);
-                    setIsReplay(true);
-                }
-            },200);
 
         }
         setSpecialMovieFunc(specialMovieInit);
@@ -139,7 +100,7 @@ function Browse() {
                 <div className="netflix-sans-font-loaded">
                     <div dir="ltr" className="extended-diacritics-language">
                         <div>
-                            <div className="bd dark-background" lang="ko-KR" data-uia="container-adult" style={{overflow: 'visible'}}>
+                            <div className="bd dark-background" lang="ko-KR" style={{overflow: 'visible'}}>
                                 <div className="pinning-header" style={{position: 'sticky', top: '0', height: 'auto', minHeight: '70px', zIndex: '1'}}>
                                     <div className="pinning-header-container" style={{background: 'transparent'}}>
                                     <div id="clcsBanner" style={{overflow: 'auto'}}></div>
@@ -193,7 +154,6 @@ function Browse() {
                                                     </span>
                                                 </div>
                                                 <div className="nav-element">
-                                                {/*<div className="nav-element">*/}
                                                     <div className="account-menu-item">
                                                         <div className="account-dropdown-button">
                                                             <a href="/YourAccount" role="button">
