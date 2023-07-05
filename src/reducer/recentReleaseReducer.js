@@ -5,9 +5,9 @@ const recentReleaseReducer = createSlice({
     initialState : [],
     reducers : {
         setRecentReleaseList(state, action) {
-            let recentReleaseMovie = [...state];
-            recentReleaseMovie = action.payload;
-            return recentReleaseMovie;
+            let movieList = [...state];
+            movieList = action.payload;
+            return movieList;
         }
     }
 });

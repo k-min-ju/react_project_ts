@@ -1,22 +1,43 @@
 import "./Browse.css";
-import {useEffect, useState} from "react";
-import axios from "axios";
-import SpecialMovie from "./movie/specialMovie.js";
-import {setLastYearList} from "./reducer/lastYearReducer.js";
-import {setRecentReleaseList} from "./reducer/recentReleaseReducer.js";
-import {setAnimationList} from "./reducer/animationReducer.js";
+import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import googleLogOut from "./login/GoogleLogOut.js";
+import SpecialMovie, {specialMoviePlay} from "./movie/specialMovie.js";
 import LastYearMovie from "./movie/lastYearMovie.js";
 import RecentReleaseMovie from "./movie/recentReleaseMovie.js";
 import AnimationMovie from "./movie/animationMovie.js";
-import {useNavigate} from "react-router-dom";
-import googleLogOut from "./login/GoogleLogOut.js";
+import CrimeMovie from "./movie/crimeMovie.js"
+import ThrillerMovie from "./movie/thrillerMovie.js";
+import DramaMovie from "./movie/dramaMovie";
+import SFMovie from "./movie/sfMovie";
+import {
+    getLastYearMovie,
+    getRecentReleaseMovie,
+    getAnimationMovie,
+    getCrimeMovie,
+    getThrillerMovie,
+    getDramaMovie,
+    getSFMovie,
+    getSpecialMovie
+} from "./movie/movieListFunc.js";
 
 function Browse() {
+    const specialReducer = useSelector((state) => state.specialReducer);
     const lastYearReducer = useSelector((state) => state.lastYearReducer);
     const recentReleaseReducer = useSelector((state) => state.recentReleaseReducer);
     const animationReducer = useSelector((state) => state.animationReducer);
+    const crimeReducer = useSelector((state) => state.crimeReducer);
+    const thrillerReducer = useSelector((state) => state.thrillerReducer);
+    const dramaReducer = useSelector((state) => state.dramaReducer);
+    const sfReducer = useSelector((state) => state.sfReducer);
     let dispatch = useDispatch();
+
+    let [isMovieStart, setIsMovieStart] = useState(false);
+    let [isReplay, setIsReplay] = useState(false);
+    let [muted, setMuted] = useState(true);
+    let [specialMovieFunc, setSpecialMovieFunc] = useState();
+    let specialMovieInit;
+    const searchRef = useRef(null);
 
     useEffect(() => {
         const accessToken = sessionStorage.getItem("accessToken");
@@ -26,28 +47,51 @@ function Browse() {
             return;
         }
 
+        // 영화 리스트 조회
+        getSpecialMovie(dispatch);
         getLastYearMovie(dispatch);
         getRecentReleaseMovie(dispatch);
         getAnimationMovie(dispatch);
+        getCrimeMovie(dispatch);
+        getThrillerMovie(dispatch);
+        getDramaMovie(dispatch);
+        getSFMovie(dispatch);
+
+        specialMovieInit = () => {
+            setTimeout(() => {
+                // 특별 소개 영화 재생
+                specialMoviePlay(setMuted, setIsMovieStart, 'N');
+            }, 2500);
+
+        }
+        setSpecialMovieFunc(specialMovieInit);
+
+        // 검색창 외 영역 클릭 감지
+        function handleOutside(e) {
+            // current.contains(e.target) : 컴포넌트 특정 영역 외 클릭 감지를 위해 사용
+            if (searchRef.current && !searchRef.current.contains(e.target) && document.querySelector('.searchBox').classList.contains('active')) {
+                document.querySelector('.searchBox').classList.toggle('active');
+            }
+        }
+        document.addEventListener("mousedown", handleOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleOutside);
+        };
+
+        // 스크롤 감지
+        window.addEventListener("scroll", handleScroll);
+
     }, []);
 
-    let [isAccountFocus, setIsAccountFocus] = useState(false);
-    let mouseLeaveTimer;
-
-    const mouseEnter = () => {
-        let caret = document.getElementsByClassName('caret')
-        if(!caret[0].classList.contains('open')) {
-            caret[0].classList.add('open');
+    const handleScroll = () => {
+        if(document.documentElement.scrollTop > 0) {
+            document.querySelector('.pinning-header-container').style = 'background: rgb(20,20,20);';
+            document.querySelector('.main-header').style = 'background-color: rgb(20,20,20);';
         }
-        setIsAccountFocus(true);
-        clearTimeout(mouseLeaveTimer);
-    }
-    const mouseLeave = () => {
-        mouseLeaveTimer = setTimeout(() => {
-            let caret = document.getElementsByClassName('caret')
-            caret[0].classList.remove('open')
-            setIsAccountFocus(false);
-        }, 400);
+        else {
+            document.querySelector('.pinning-header-container').style = 'background: transparent;';
+            document.querySelector('.main-header').style = '';
+        }
     }
 
     return (
@@ -56,33 +100,46 @@ function Browse() {
                 <div className="netflix-sans-font-loaded">
                     <div dir="ltr" className="extended-diacritics-language">
                         <div>
-                            <div className="bd dark-background" lang="ko-KR" data-uia="container-adult" style={{overflow: 'visible'}}>
+                            <div className="bd dark-background" lang="ko-KR" style={{overflow: 'visible'}}>
                                 <div className="pinning-header" style={{position: 'sticky', top: '0', height: 'auto', minHeight: '70px', zIndex: '1'}}>
                                     <div className="pinning-header-container" style={{background: 'transparent'}}>
                                     <div id="clcsBanner" style={{overflow: 'auto'}}></div>
                                         <div className="main-header has-billboard menu-navigation" role="navigation">
-                                            <a aria-label="넷플릭스" className="logo icon-logoUpdate active" href="/browse"></a>
+                                            <a aria-label="넷플릭스" className="logo icon-logoUpdate active" href="/browse">
+                                                <img className="logo icon-logoUpdate active" src={process.env.PUBLIC_URL + '/netfilx_logo.png'} />
+                                            </a>
                                             <ul className="tabbed-primary-navigation">
                                                 <li className="navigation-menu"><a className="menu-trigger" role="button" aria-haspopup="true" href="todo" tabIndex="0">메뉴</a></li>
                                                 <li className="navigation-tab"><a className="current active" href="/browse">홈</a></li>
-                                                <li className="navigation-tab"><a href="/browse/genre/83">시리즈</a></li>
-                                                <li className="navigation-tab"><a href="/browse/genre/34399">영화</a></li>
-                                                <li className="navigation-tab"><a href="/latest">NEW! 요즘 대세 콘텐츠</a></li>
-                                                <li className="navigation-tab"><a href="/browse/my-list">내가 찜한 콘텐츠</a></li>
-                                                <li className="navigation-tab"><a href="/browse/original-audio">언어별로 찾아보기</a></li>
+                                                <li className="navigation-tab"><a href="#" onClick={(e) => {e.preventDefault()}}>시리즈</a></li>
+                                                <li className="navigation-tab"><a href="#" onClick={(e) => {e.preventDefault()}}>영화</a></li>
+                                                <li className="navigation-tab"><a href="#" onClick={(e) => {e.preventDefault()}}>NEW! 요즘 대세 콘텐츠</a></li>
+                                                <li className="navigation-tab"><a href="#" onClick={(e) => {e.preventDefault()}}>내가 찜한 콘텐츠</a></li>
+                                                <li className="navigation-tab"><a href="#" onClick={(e) => {e.preventDefault()}}>언어별로 찾아보기</a></li>
                                             </ul>
                                             <div className="secondary-navigation">
                                                 <div className="nav-element">
-                                                    <div className="searchBox">
-                                                        <button className="searchTab" tabIndex="0" aria-label="검색" data-uia="search-box-launcher">
+                                                    <div className="searchBox" ref={searchRef}>
+                                                        <button className="searchTab" aria-label="검색" onClick={() => {
+                                                            document.querySelector('.searchBox').classList.toggle('active');
+                                                        }}>
                                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="search-icon" data-name="Search">
                                                                 <path fillRule="evenodd" clipRule="evenodd" d="M14 11C14 14.3137 11.3137 17 8 17C4.68629 17 2 14.3137 2 11C2 7.68629 4.68629 5 8 5C11.3137 5 14 7.68629 14 11ZM14.3623 15.8506C12.9006 17.7649 10.5945 19 8 19C3.58172 19 0 15.4183 0 11C0 6.58172 3.58172 3 8 3C12.4183 3 16 6.58172 16 11C16 12.1076 15.7749 13.1626 15.368 14.1218L24.0022 19.1352L22.9979 20.8648L14.3623 15.8506Z" fill="currentColor"></path>
                                                             </svg>
                                                         </button>
+
+                                                        <div className="searchInput">
+                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="search-icon ltr-0 e1mhci4z1" data-name="Search">
+                                                                <path fillRule="evenodd" clipRule="evenodd" d="M14 11C14 14.3137 11.3137 17 8 17C4.68629 17 2 14.3137 2 11C2 7.68629 4.68629 5 8 5C11.3137 5 14 7.68629 14 11ZM14.3623 15.8506C12.9006 17.7649 10.5945 19 8 19C3.58172 19 0 15.4183 0 11C0 6.58172 3.58172 3 8 3C12.4183 3 16 6.58172 16 11C16 12.1076 15.7749 13.1626 15.368 14.1218L24.0022 19.1352L22.9979 20.8648L14.3623 15.8506Z" fill="currentColor"></path>
+                                                            </svg>
+                                                            <label htmlFor="searchInput" id="searchInput-label" className="visually-hidden">검색</label>
+                                                            <input type="text" id="searchInput" name="searchInput" placeholder="제목, 사람, 장르" maxLength="80" className="focus-visible" />
+                                                            <span className="icon-close empty" />
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div className="nav-element show-kids">
-                                                    <a href="/Kids">키즈</a>
+                                                    <a href="#" onClick={(e) => {e.preventDefault()}}>키즈</a>
                                                 </div>
                                                 <div className="nav-element">
                                                     <span className="notifications">
@@ -91,26 +148,23 @@ function Browse() {
                                                                 <path d="M13 4.07092C16.3922 4.55624 18.9998 7.4736 18.9998 11V15.2538C20.0486 15.3307 21.0848 15.4245 22.107 15.5347L21.8926 17.5232C18.7219 17.1813 15.409 17 11.9998 17C8.59056 17 5.27764 17.1813 2.10699 17.5232L1.89258 15.5347C2.91473 15.4245 3.95095 15.3307 4.99978 15.2538V11C4.99978 7.47345 7.6076 4.55599 11 4.07086V2L13 2V4.07092ZM16.9998 15.1287V11C16.9998 8.23858 14.7612 6 11.9998 6C9.23836 6 6.99978 8.23858 6.99978 11V15.1287C8.64041 15.0437 10.3089 15 11.9998 15C13.6907 15 15.3591 15.0437 16.9998 15.1287ZM8.62568 19.3712C8.6621 20.5173 10.1509 22 11.9993 22C13.8477 22 15.3365 20.5173 15.373 19.3712C15.38 19.1489 15.1756 19 14.9531 19H9.04555C8.82308 19 8.61862 19.1489 8.62568 19.3712Z" fill="currentColor">
                                                                 </path>
                                                             </svg>
-                                                            {/*<span className="notification-pill">15</span>*/}
+                                                            <div className="callout-arrow"></div>
                                                         </button>
+                                                        <AlarmDropDown />
                                                     </span>
                                                 </div>
-                                                <div className="nav-element" onMouseEnter={mouseEnter} onMouseLeave={mouseLeave} >
+                                                <div className="nav-element">
                                                     <div className="account-menu-item">
                                                         <div className="account-dropdown-button">
                                                             <a href="/YourAccount" role="button">
                                                                 <span className="profile-link" role="presentation">
                                                                     <img className="profile-icon" src="http://occ-0-4796-993.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABcFOODvM2-dL-e5zPcoGJ_I2cdHupjSPT_Daxamtsl7X60u5tnkYULcMLms2VRWD17aovP7MknmLUszew6S2rIxrQkSy2Qg.png?r=a13" alt=""></img>
-                                                                    {
-                                                                        isAccountFocus ? <div className="callout-arrow"></div> : ''
-                                                                    }
+                                                                    <div className="callout-arrow"></div>
                                                                 </span>
                                                             </a>
                                                             <span className="caret" role="presentation"></span>
                                                         </div>
-                                                        {
-                                                            isAccountFocus ? <AccountDropDown isAccountFocus={isAccountFocus} /> : ''
-                                                        }
+                                                        <AccountDropDown />
                                                     </div>
                                                 </div>
                                             </div>
@@ -121,9 +175,9 @@ function Browse() {
                                 <div className="mainView" id="main-view" role="main">
                                     <div className="lolomo is-fullbleed">
                                         <h1 className="visually-hidden">Netflix 홈</h1>
-
                                         {/*특별 소개 컨텐츠*/}
-                                        <SpecialMovie/>
+                                        <SpecialMovie movieList={specialReducer} specialMovieFunc={specialMovieFunc} isMovieStart={isMovieStart} setIsMovieStart={setIsMovieStart}
+                                                      isReplay={isReplay} setIsReplay={setIsReplay} muted={muted} setMuted={setMuted}/>
 
                                         {/*지난 1년간 공개된 컨텐츠*/}
                                         <LastYearMovie movieList={lastYearReducer}/>
@@ -133,6 +187,18 @@ function Browse() {
 
                                         {/*애니메이션 영화*/}
                                         <AnimationMovie movieList={animationReducer}/>
+
+                                        {/*범죄 영화*/}
+                                        <CrimeMovie movieList={crimeReducer}/>
+
+                                        {/*스릴러 영화*/}
+                                        <ThrillerMovie movieList={thrillerReducer}/>
+
+                                        {/*드라마 영화*/}
+                                        <DramaMovie movieList={dramaReducer} />
+
+                                        {/*SF 영화*/}
+                                        <SFMovie movieList={sfReducer} />
                                     </div>
                                 </div>
                             </div>
@@ -144,93 +210,82 @@ function Browse() {
     )
 }
 
-// KMDb에 영화 리스트 요청
-async function getKMDbMovieList(searchParam, dispatch, setDataFunction) {
-    if(window.common.isNotEmpty(searchParam)) {
-        const movieSearch = axios.create({
-            baseURL: process.env.REACT_APP_KMDB_API_URL
-        });
-        const getMovieList = (params) => {
-            return movieSearch.get("/openapi-data2/wisenut/search_api/search_json2.jsp", {params})
-                .catch((err) => {
-                    console.log("error="+err);
-                })
-                .then((res) => {
-                    if(window.common.isEmpty(res)) return;
+// 알림창 드롭다운 메뉴
+const AlarmDropDown = () => {
+    return (
+        <div role="menu" className="sub-menu theme-lakira">
+            <div className="topbar"></div>
+            <ul className="sub-menu-list">
+                <li className="sub-menu-item" role="none">
+                    <div className="ptrack-container">
+                        <div className="ptrack-content">
+                            <ul className="notifications-container">
+                                <li className="notification">
+                                    <div className="ptrack-content">
+                                        <div className="image-text-notification">
+                                            <a className="element image notification-link" href="#" onClick={(e) => {e.preventDefault()}}>
+                                                <img className="title-card"
+                                                     src="https://dnm.nflximg.net/api/v6/kvDymu0eXRyicIuSUzvRrxrm5dU/AAAABZM9OQV_AzE2OI71hROhPiTzW5vxf_L3dsnlfmbMsrjzULHwuyG4RtW2Qu_nIvL8kWSeT7nCBMMs8uFj19vo4Q4eonw60rx6namp3lOGjYkqFbmy_E-N3V7SY88I01kkBeLzaQQhhkKbjoI.jpg?r=64b"
+                                                     srcSet="https://dnm.nflximg.net/api/v6/kvDymu0eXRyicIuSUzvRrxrm5dU/AAAABZM9OQV_AzE2OI71hROhPiTzW5vxf_L3dsnlfmbMsrjzULHwuyG4RtW2Qu_nIvL8kWSeT7nCBMMs8uFj19vo4Q4eonw60rx6namp3lOGjYkqFbmy_E-N3V7SY88I01kkBeLzaQQhhkKbjoI.jpg?r=64b 112w"
+                                                     alt="킹더랜드" sizes="112px" />
+                                            </a>
+                                            <a className="element text notification-link" href="#" onClick={(e) => {e.preventDefault()}}>
+                                                <div className="header">신규 콘텐츠</div>
+                                                <div className="body">킹더랜드</div>
+                                                <div className="age"><span className="relative-time">4일 </span></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="notification">
+                                    <div className="ptrack-content">
+                                        <div className="image-text-notification">
+                                            <a className="element image notification-link" href="#" onClick={(e) => {e.preventDefault()}}>
+                                                <img className="title-card"
+                                                     src="https://dnm.nflximg.net/api/v6/kvDymu0eXRyicIuSUzvRrxrm5dU/AAAABTmqM34BObZYbNqmkFJABVUUqE62TARgTJaKkiJ-DDOCtljIkpimHZ6x26OpMJSo1-nrCJcwJDv7W_DvO77nUIlCqKNi9b0IMk7ztUdpj-iEAqApwlAncNeQaCGOt1ldH-4mFfwb3nPHN5M.jpg?r=869"
+                                                     srcSet="https://dnm.nflximg.net/api/v6/kvDymu0eXRyicIuSUzvRrxrm5dU/AAAABTmqM34BObZYbNqmkFJABVUUqE62TARgTJaKkiJ-DDOCtljIkpimHZ6x26OpMJSo1-nrCJcwJDv7W_DvO77nUIlCqKNi9b0IMk7ztUdpj-iEAqApwlAncNeQaCGOt1ldH-4mFfwb3nPHN5M.jpg?r=869 112w"
+                                                     alt="마당이 있는 집"
+                                                     sizes="112px" />
+                                            </a>
+                                            <a className="element text notification-link" href="#" onClick={(e) => {e.preventDefault()}}>
+                                                <div className="header">신규 콘텐츠</div>
+                                                <div className="body">마당이 있는 집</div>
+                                                <div className="age"><span className="relative-time">1주 전</span></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="notification">
+                                    <div className="ptrack-content">
+                                        <div className="image-text-notification">
+                                            <a className="element image notification-link" href="#" onClick={(e) => {e.preventDefault()}}>
+                                                <img className="title-card"
+                                                     src="https://dnm.nflximg.net/api/v6/kvDymu0eXRyicIuSUzvRrxrm5dU/AAAABfAkGwOZiC9U8eqVJEI6OWevKAA0ByiiencOc7G-HcUMtFmgIQzifTAg-TmiNPkVmyFoSw9PBjqF5oZdGfbCnp4GP7ugl05VxhrGG9_jbNn_aGpsn3HSNxRPtD4nrTcvxU0q-dk-xSYh_1Q.jpg?r=3b4"
+                                                     srcSet="https://dnm.nflximg.net/api/v6/kvDymu0eXRyicIuSUzvRrxrm5dU/AAAABfAkGwOZiC9U8eqVJEI6OWevKAA0ByiiencOc7G-HcUMtFmgIQzifTAg-TmiNPkVmyFoSw9PBjqF5oZdGfbCnp4GP7ugl05VxhrGG9_jbNn_aGpsn3HSNxRPtD4nrTcvxU0q-dk-xSYh_1Q.jpg?r=3b4 112w"
+                                                     alt="이번 생도 잘 부탁해"
+                                                     sizes="112px" />
+                                            </a>
+                                            <a className="element text notification-link" href="#" onClick={(e) => {e.preventDefault()}}>
+                                                <div className="header">신규 콘텐츠</div>
+                                                <div className="body">이번 생도 잘 부탁해</div>
+                                                <div className="age"><span className="relative-time">1주 전</span></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    )
 
-                    let movieInfo = res.data.Data[0].Result;
-                    if(movieInfo) {
-                        movieInfo = movieInfo.filter((item) => window.common.isNotEmpty(item.posters));
-                        dispatch(setDataFunction(movieInfo));
-                    }
-                });
-        }
-        await getMovieList(searchParam);
-    }
 }
 
-// 지난 1년간 공개된 영화 리스트
-function getLastYearMovie(dispatch) {
-    let date = new Date();
-    date.setFullYear(date.getFullYear()-1);
-    const searchParam = {
-        ServiceKey: process.env.REACT_APP_KMDB_API_KEY,
-        collection: 'kmdb_new2',
-        detail: 'Y',
-        sort: 'prodYear,0',
-        releaseDts: window.common.getDate(date),
-        releaseDte: window.common.getDate(),
-        ratedYn: 'Y',
-        listCount: 50
-    };
-    getKMDbMovieList(searchParam, dispatch, setLastYearList);
-}
 
-// 최근 개봉한 영화 리스트
-function getRecentReleaseMovie(dispatch) {
-    let date = new Date();
-    date.setMonth(date.getMonth()-1);
-    const searchParam = {
-        ServiceKey: process.env.REACT_APP_KMDB_API_KEY,
-        collection: 'kmdb_new2',
-        detail: 'Y',
-        sort: 'prodYear,1',
-        releaseDts: window.common.getDate(date),
-        releaseDte: window.common.getDate(),
-        ratedYn: 'Y',
-        listCount: 20
-    };
-    getKMDbMovieList(searchParam, dispatch, setRecentReleaseList);
-}
-
-// 애니메이션 영화 리스트
-function getAnimationMovie(dispatch) {
-    let date = new Date();
-    date.setMonth(date.getMonth()-3);
-    const searchParam = {
-        ServiceKey: process.env.REACT_APP_KMDB_API_KEY,
-        collection: 'kmdb_new2',
-        detail: 'Y',
-        sort: 'prodYear,1',
-        releaseDts: window.common.getDate(date),
-        releaseDte: window.common.getDate(),
-        ratedYn: 'Y',
-        type: '애니메이션',
-        listCount: 50
-    };
-    getKMDbMovieList(searchParam, dispatch, setAnimationList);
-}
-
-// 드롭다운 메뉴
-const AccountDropDown = (props) => {
-    setTimeout(() => {
-        let accountDropDown = document.getElementsByClassName("account-drop-down");
-        let calloutArrow = document.getElementsByClassName("callout-arrow");
-        if(props.isAccountFocus) {
-            accountDropDown[0].style = 'opacity: 1; transition-duration: 150ms';
-            calloutArrow[0].style = 'opacity: 1; transition-duration: 150ms';
-        }
-    }, 50);
+// account 드롭다운 메뉴
+const AccountDropDown = () => {
 
     const doLogout = () => {
         const loginType = sessionStorage.getItem('loginType');
@@ -288,27 +343,5 @@ const AccountDropDown = (props) => {
         </>
     )
 }
-
-// async function getKobisMovieList(searchParam) {
-//     if(window.common.isNotEmpty(searchParam)) {
-//         let movieList;
-//         const movieSearch = axios.create({
-//             baseURL: 'https://kobis.or.kr'
-//         });
-//         let getMovieList = (params) => {
-//             return movieSearch.get("/kobisopenapi/webservice/rest/movie/searchMovieList.json", {params})
-//                                     .catch((err) => {
-//                                         console.log("error="+err);
-//                                     })
-//                                     .then((res) => {
-//                                         let movieInfo = res.data.movieListResult.movieList;
-//                                         if(movieInfo.length > 0) {
-//                                             movieList = movieInfo.filter((movie) => !movie.genreAlt.includes("성인물"));
-//                                         }
-//                                     });
-//         }
-//         await getMovieList(searchParam);
-//     }
-// }
 
 export default Browse;

@@ -1,10 +1,10 @@
 import {createSlice} from "@reduxjs/toolkit";
 
-const animationReducer = createSlice({
-    name : 'animationReducer',
+const thrillerReducer = createSlice({
+    name : 'thrillerReducer',
     initialState : [],
     reducers : {
-        setAnimationList(state, action) {
+        setThrillerList(state, action) {
             let movieList = [...state];
             movieList = action.payload;
             return movieList;
@@ -12,6 +12,6 @@ const animationReducer = createSlice({
     }
 });
 
-export let { setAnimationList } = animationReducer.actions;
+export let { setThrillerList } = thrillerReducer.actions;
 
-export default animationReducer;
+export default thrillerReducer;

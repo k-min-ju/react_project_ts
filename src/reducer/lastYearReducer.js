@@ -5,9 +5,9 @@ const lastYearReducer = createSlice({
     initialState : [],
     reducers : {
         setLastYearList(state, action) {
-            let lastYearMovie = [...state];
-            lastYearMovie = action.payload;
-            return lastYearMovie;
+            let movieList = [...state];
+            movieList = action.payload;
+            return movieList;
         }
     }
 });
