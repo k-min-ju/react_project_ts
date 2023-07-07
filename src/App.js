@@ -1,5 +1,6 @@
 import Login from "./Login.js";
 import Browse from "./Browse.js";
+import Watch from "./Watch.js";
 import {Route, Routes} from "react-router-dom";
 import * as common from "./common/commonFunction.js";
 // import {createContext} from "react";
@@ -16,6 +17,7 @@ function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/Browse" element={<Browse />} />
+                <Route path="/watch/:movieId/:movieSeq" element={<Watch />} />
                 {/*<Route path="/Browse" element={*/}
                 {/*    <Context.Provider value={{}}>*/}
                 {/*        <Browse />*/}

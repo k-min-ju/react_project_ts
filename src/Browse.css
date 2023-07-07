@@ -27226,7 +27226,8 @@ a {
 
 .video-playing .titleWrapper {
     transform-origin: left bottom;
-    transform: scale(0.6) translate3d(0px, 136.667px, 0px);
+    /*transform: scale(0.6) translate3d(0px, 136.667px, 0px);*/
+    transform: scale(0.6) translate3d(0px, 100px, 0px);
     transition-duration: 1300ms;
     transition-delay: 5000ms;
 }
@@ -27263,16 +27264,189 @@ a {
     transition-delay: 200ms;
 }
 
-/*.plotText {*/
-/*    transform: translate3d(0px, 0px, 0px);*/
-/*    transition-duration: 1300ms;*/
-/*    transition-delay: 0ms;*/
-/*    opacity: 1;*/
+.ltr-1212o1j video {
+    left: 50%;
+    margin: 0px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ltr-omkt8s {
+    inset: 0px;
+    overflow: hidden;
+    pointer-events: auto;
+    position: absolute;
+}
+
+/*.ltr-omkt8s.inactive, .ltr-omkt8s.passive {*/
+/*    cursor: none;*/
 /*}*/
 
-/*.video-playing {*/
+.ltr-1212o1j {
+    background-color: rgb(0, 0, 0);
+    box-sizing: border-box;
+    height: 100%;
+    left: 0px;
+    opacity: 1;
+    overflow: hidden;
+    position: absolute;
+    top: 0px;
+    transition: opacity 500ms linear 0s;
+    pointer-events: auto;
+    width: 100%;
+    will-change: opacity;
+}
 
-/*}*/
-/*opacity: 1;*/
-/*transition-duration: 600ms;*/
-/*transition-delay: 200ms;*/
+.ltr-16tr625 {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    width: 100%;
+}
+
+.ltr-1jnlk6v {
+    box-sizing: border-box;
+    display: flex;
+    min-height: 0px;
+    min-width: 0px;
+    position: relative;
+}
+
+.ltr-14rufaj {
+    box-sizing: border-box;
+    display: flex;
+    height: 100%;
+    position: relative;
+    width: 100%;
+}
+
+.ltr-my293h.medium {
+    height: 5.2rem;
+    width: 5.2rem;
+}
+
+.ltr-14ph5iy {
+    background-color: transparent;
+    border-radius: 0.2rem;
+    border: none;
+    box-sizing: border-box;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    transition: transform 150ms ease 0s;
+    will-change: height, width;
+}
+
+.ltr-1qb0uev {
+    box-sizing: border-box;
+    direction: ltr;
+    height: 100%;
+    margin: 0px;
+    padding: 0px 2rem;
+    pointer-events: auto;
+    position: relative;
+    width: 100%;
+}
+
+.ltr-er76rf {
+    direction: ltr;
+    font-size: 2rem;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.ltr-vf5me0 {
+    box-sizing: border-box;
+    display: flex;
+    min-height: 0px;
+    min-width: 0px;
+    position: relative;
+    flex-basis: 14rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+.ltr-er76rf.medium {
+    font-size: 2rem;
+}
+
+.ltr-1rl4r83 {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    justify-content: center;
+    color: rgb(255, 255, 255);
+    height: 100%;
+    width: 100%;
+    padding: 12%;
+    position: relative;
+    user-select: none;
+}
+
+.ltr-tznaxg {
+    font-size: 1.6rem;
+    -webkit-font-smoothing: antialiased;
+    color: rgb(255, 255, 255);
+    font-weight: 500;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.medium .ltr-tznaxg {
+    font-size: 5.4rem;
+}
+
+.ltr-1mauwht {
+    font-size: 1.6rem;
+    -webkit-font-smoothing: antialiased;
+    color: rgb(255, 255, 255);
+    font-weight: 500;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.medium .ltr-1mauwht {
+    font-size: 2.4rem;
+    margin: 0.6rem 0px 1.2rem;
+}
+
+.ltr-l09063 {
+    font-size: 1.6rem;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    color: rgb(204, 204, 204);
+    width: 60%;
+    margin: 0px;
+}
+
+.medium .ltr-l09063 {
+    font-size: 1.8rem;
+}
+
+.ltr-hpadbw {
+    font-size: 1.6rem;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    color: rgb(204, 204, 204);
+    position: absolute;
+    bottom: 10%;
+    right: 10%;
+}
+
+.medium .ltr-hpadbw {
+    font-size: 1.8rem;
+}
+
+.medium .ltr-1mauwht span + span {
+    margin-left: 2.4rem;
+}

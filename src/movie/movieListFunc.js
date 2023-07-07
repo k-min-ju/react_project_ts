@@ -11,6 +11,17 @@ import {setThrillerList} from "../reducer/thrillerReducer.js";
 
 const movieListCount = 60;
 
+export function getKMDBMovieOne(movieId, movieSeq) {
+    const searchParam = {
+        ServiceKey: process.env.REACT_APP_KMDB_API_KEY,
+        collection: 'kmdb_new2',
+        detail: 'Y',
+        movieId: movieId,
+        movieSeq: movieSeq
+    };
+    return getKMDbMovieOne(searchParam);
+}
+
 // 메인 special 영화
 export function getSpecialMovie(dispatch) {
     const searchParam = {
@@ -134,12 +145,14 @@ export function getSFMovie(dispatch) {
 async function getKMDbMovieList(searchParam, dispatch, setDataFunction) {
     if(window.common.isNotEmpty(searchParam)) {
         const movieSearch = axios.create({
-            baseURL: process.env.REACT_APP_KMDB_API_URL
+            baseURL: process.env.REACT_APP_KMDB_API_URL,
+            timeout: 10000
         });
         const getMovieList = (params) => {
             return movieSearch.get("/openapi-data2/wisenut/search_api/search_json2.jsp", {params})
                 .catch((err) => {
                     console.log("error="+err);
+                    return Promise.reject(err);
                 })
                 .then((res) => {
                     if(window.common.isEmpty(res)) return;
@@ -153,4 +166,29 @@ async function getKMDbMovieList(searchParam, dispatch, setDataFunction) {
         }
         await getMovieList(searchParam);
     }
+}
+
+async function getKMDbMovieOne(searchParam) {
+    let movieInfo;
+    if(window.common.isNotEmpty(searchParam)) {
+        const movieSearch = axios.create({
+            baseURL: process.env.REACT_APP_KMDB_API_URL,
+            timeout: 10000
+        });
+        const getMovie = (params) => {
+            return movieSearch.get("/openapi-data2/wisenut/search_api/search_json2.jsp", {params})
+                .catch((err) => {
+                    console.log("error="+err);
+                    return Promise.reject(err);
+                })
+                .then((res) => {
+                    if(window.common.isEmpty(res)) return;
+
+                    movieInfo = res.data.Data[0].Result;
+                });
+        }
+        await getMovie(searchParam);
+    }
+
+    return movieInfo;
 }
