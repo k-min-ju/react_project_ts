@@ -1,9 +1,5 @@
 import { useGoogleLogin } from "@react-oauth/google";
 
-let isGoogleLogin = false;
-export {isGoogleLogin};
-
-
 const googleLoginButton = (props) => {
     const loginSuccess = (res) => {
         if(window.common.isNotEmpty(res.access_token)) {
