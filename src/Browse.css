@@ -27636,13 +27636,14 @@ a {
      visibility: visible;
  }
 
-ltr-1kex6ih {
+.ltr-1kex6ih {
     border-radius: 0.3rem;
     font-size: 0.8rem;
     opacity: 0;
     padding: 0px;
     position: absolute;
     transform: translateZ(0px);
+    transition: opacity 200ms ease 0s;
     visibility: hidden;
     will-change: transform, opacity, visibility;
     background-color: inherit;
@@ -27661,4 +27662,24 @@ ltr-1kex6ih {
     padding: 0px;
     pointer-events: none;
     position: relative;
+}
+
+.ltr-l5iwyw img{
+    display: block;
+    width: 100%;
+}
+
+.ltr-l5iwyw.medium .trick-play-text {
+    font-size: 1.8rem;
+    padding: 1rem;
+}
+
+.ltr-l5iwyw .trick-play-text {
+    text-align: center;
+}
+
+:not(:root):fullscreen::backdrop {
+    position: fixed;
+    inset: 0px;
+    background: black;
 }

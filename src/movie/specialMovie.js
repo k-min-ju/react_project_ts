@@ -22,9 +22,9 @@ function SpecialMovie(props) {
     const movieEnded = () => {
         props.setIsMovieStart(false);
         props.setIsReplay(true);
-        let $element = document.querySelector('.trailer-billboard');
-        $element.classList.toggle('video-playing')
-        $element.children[0].classList.toggle('dismiss-static', 'dismiss-mask');
+        let element = document.querySelector('.trailer-billboard');
+        element.classList.toggle('video-playing')
+        element.children[0].classList.toggle('dismiss-static', 'dismiss-mask');
     }
 
     return(
@@ -249,35 +249,35 @@ function Replay(props) {
 
 export function specialMoviePlay(setMuted, setIsMovieStart, replay) {
     // 메인 이미지 걷어낸 후 동영상 재생
-    let $element = document.querySelector('.trailer-billboard');
-    if($element) {
-        $element.classList.toggle('video-playing')
-        $element.children[0].classList.toggle('dismiss-static', 'dismiss-mask');
-        $element.children[0].children[0].className = 'nfp nf-player-container notranslate inactive NFPlayer';
+    let element = document.querySelector('.trailer-billboard');
+    if(element) {
+        element.classList.toggle('video-playing')
+        element.children[0].classList.toggle('dismiss-static', 'dismiss-mask');
+        element.children[0].children[0].className = 'nfp nf-player-container notranslate inactive NFPlayer';
     }
 
     // chrome 자동 재생 정책 > 음소거를 해야만 autoPlay 사용가능(동영상 자동 재생 시 원치 않는 사운드 재생 방지)
     // specialMovie컴포넌트 로드 후 동영상을 강제로 재생시키고 사운드 설정.
     // 동영상 강제 재생 후 사운드ON이 chrome 정책상 불가
-    const $specialMovie = document.getElementById("specialMovie");
-    if(window.common.isEmpty($specialMovie)) return;
+    const specialMovie = document.getElementById("specialMovie");
+    if(window.common.isEmpty(specialMovie)) return;
 
     // 사운드OFF
     if (localStorage.getItem('specialMovieMuted') == "ON") {
-        $specialMovie.play();
+        specialMovie.play();
         setMuted(true);
     }
     // 사운드ON
     // else if(localStorage.getItem('specialMovieMuted') == "OFF") {
-    //     $specialMovie.muted = true;
-    //     $specialMovie.play();
-    //     $specialMovie.muted = false;
+    //     specialMovie.muted = true;
+    //     specialMovie.play();
+    //     specialMovie.muted = false;
     //     setMuted(false);
     // }
     else {
-        $specialMovie.play();
+        specialMovie.play();
         if(replay != 'Y') {
-            $specialMovie.muted = true;
+            specialMovie.muted = true;
             setMuted(true);
         }
     }

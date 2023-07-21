@@ -5,8 +5,6 @@ import {useEffect, useRef, useState} from "react";
 import {ClipLoader} from "react-spinners";
 import {IdleTimerProvider} from 'react-idle-timer';
 
-let prevRailHeight = 0;
-
 function Watch() {
     const {movieId, movieSeq} = useParams();                         // KMDb에 조회 요청할 영화 parameter
     let [status, setStatus] = useState('loading');          // loading : 로딩바 표시, active : 영화 상단, 하단 UI표시, passive : 영화 중지 상태일 때 영화에 대한 설명 표시
@@ -17,18 +15,29 @@ function Watch() {
     let [showTimeout, setShowTimeout] = useState();                  // mouse오버 시 SoundBar컴포넌트 유지시키는 용도
     let [disableClickBack, setDisableClickBack] = useState(false);          // 뒤로 10초 이동 시 0.5초 disabled
     let [disableClickForward, setDisableClickForward] = useState(false);    // 앞으로 10초 이동 시 0.5초 disabled
+    let [movieDuration, setMovieDuration] = useState();              // 영화 상영 남은 시간
+    let [currentPlayTime, setCurrentPlayTime] = useState(0);// 영화 현재 상영 시간
+    let [isUpdateNeed, setIsUpdateNeed] = useState(false);  // Active컴포넌트에서 타임라인 바 상태를 update하기 위해 사용
+    let [isFullScreen, setIsFullScreen] = useState(false);  // 영화 fullScreen 여부
+    const navigate = useNavigate();
     const videoRef = useRef(null);
     const ariaValueRef = useRef(null);      // 사운드 바에서 사용
     const railRef = useRef(null);           // 사운드 바에서 사용
     const knobRef = useRef(null);           // 사운드 바에서 사용
     const prevRailHeight = useRef(null);    // 사운드 바에서 사용
-    const navigate = useNavigate();
-    // localStorage.getItem('movieMuted') : 최초 영화 시작 시 설정에 필요한 음소거 값
-    // localStorage.getItem('movieVolume') : 최초 영화 시작 시 설정에 필요한 음량 값
+    const timeLineBarRef = useRef(null);    // 타임라인 바에서 사용
+    const tickRef = useRef(null);           // 타임라인 바에서 사용
+    const tickLeftRef = useRef(null);       // 타임라인 바에서 사용
+    const tickRightRef = useRef(null);      // 타임라인 바에서 사용
+    const redBtnRef = useRef(null);         // 타임라인 바에서 사용
+    const redLineRef = useRef(null);        // 타임라인 바에서 사용
+    const prevTimeLineWidth = useRef(null); // 타임라인 바에서 사용
 
     useEffect(() => {
         document.getElementsByTagName('html')[0].className = 't_33e568 t_5c6351 t_510ca7 t_17d527 t_75f67f t_89d625 js-focus-visible watch-video-root';
 
+        // localStorage.getItem('movieMuted') : 최초 영화 시작 시 설정에 필요한 음소거 값
+        // localStorage.getItem('movieVolume') : 최초 영화 시작 시 설정에 필요한 음량 값
         // 음소거 기본값 설정
         if(window.common.isEmpty(localStorage.getItem('movieMuted'))) {
             localStorage.setItem('movieMuted', 'OFF');
@@ -49,9 +58,11 @@ function Watch() {
             setMovieData(data);
             document.querySelector('.ltr-omkt8s').classList.replace('inactive', 'active');
 
+            // 영화 상영
             setTimeout(() => {
                 setStatus('active');
                 setIsPlayMovie(true);
+                setMovieDuration(convertToHHMM(videoRef.current.duration));
 
                 document.querySelector('.ltr-1212o1j').style = 'display: block;';
                 videoRef.current.play();
@@ -59,7 +70,7 @@ function Watch() {
                     document.getElementById('movie').muted = true;
                     setVolumeStatus('off');
                     ariaValueRef.current.setAttribute('aria-valuenow', 0);
-                    knobRef.current.style.top = 'calc(' + Math.floor(railRef.current.getBoundingClientRect().height) + 'px - 1.125rem)';
+                    knobRef.current.style.top = `calc(${Math.floor(railRef.current.getBoundingClientRect().height)}px - 1.125rem)`;
                     railRef.current.children[0].style.top = '0px';
                     railRef.current.children[0].style.height = '0px';
                 }
@@ -87,18 +98,34 @@ function Watch() {
         // prevRailHeight.current : resize되기 전 레일의 height
         // railRef.current.offsetHeight : resize된 후 레일의 height
         // 사운드바
-        const percent = ((prevRailHeight.current-railRef.current.offsetHeight) / prevRailHeight.current)*100;     // 브라우저가 줄어들거나 늘어난 % 구하기
+        const railPercent = ((prevRailHeight.current - railRef.current.offsetHeight) / prevRailHeight.current) * 100;     // 브라우저가 줄어들거나 늘어난 % 구하기
         const knobCalcVal = knobRef.current.style.top;    // 볼륨 버튼의 top값 > calc(??px-1.125rem)
         // calc()에서 px값만 추출
-        const startIndex = knobCalcVal.indexOf("(") + 1;
-        const endIndex = knobCalcVal.indexOf("px");
+        let startIndex = knobCalcVal.indexOf("(") + 1;
+        let endIndex = knobCalcVal.indexOf("px");
         const knobTop = knobCalcVal.substring(startIndex, endIndex);
-        const newTop = knobTop - ((knobTop * percent) / 100);
+        const newTop = knobTop - ((knobTop * railPercent) / 100);
 
         knobRef.current.style.top = `calc(${newTop}px - 1.125rem`;
         railRef.current.children[0].style.top = `${newTop}px`;
-        railRef.current.children[0].style.height = (railRef.current.offsetHeight - `${newTop}`) + 'px';
+        railRef.current.children[0].style.height = `${railRef.current.offsetHeight - newTop}px`;
         prevRailHeight.current = railRef.current.offsetHeight;
+
+        // 타임라인 바
+        const timelinePercent = ((prevTimeLineWidth.current - timeLineBarRef.current.offsetWidth) / prevTimeLineWidth.current) * 100;
+        const redLineWidth = redLineRef.current.style.width.slice(0,-2);
+        const redBtnLeft = redBtnRef.current.style.left;
+        let newWidth = redLineWidth - ((redLineWidth * timelinePercent) / 100);
+        startIndex = redBtnLeft.indexOf("(") + 1;
+        endIndex = redBtnLeft.indexOf("px");
+        let newLeft = redBtnLeft.substring(startIndex, endIndex);
+        newLeft = newLeft - ((newLeft * timelinePercent) / 100);
+
+        redLineRef.current.style.width = `${newWidth}px`;
+        redBtnRef.current.style.left = `${newLeft}px`;
+        tickLeftRef.current = tickRef.current.getBoundingClientRect().left;
+        tickRightRef.current = Math.round(window.innerWidth - tickRef.current.parentNode.getBoundingClientRect().right);
+        prevTimeLineWidth.current = timeLineBarRef.current.offsetWidth;
     };
 
 
@@ -109,15 +136,18 @@ function Watch() {
                     <div className="watch-video--player-view">
                         {
                             // 로딩
-                            // status == "loading" ? <Loading /> : <TimerComponent status={status} setStatus={setStatus} isPlayMovie={isPlayMovie}
-                            //                                                     setIsPlayMovie={setIsPlayMovie} />
+                            status == "loading" ? <Loading /> : <TimerComponent status={status} setStatus={setStatus} isPlayMovie={isPlayMovie} setIsPlayMovie={setIsPlayMovie}
+                                                                                videoRef={videoRef} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} />
                         }
                         <div className="uma" id="uma" role="region"></div>
                         <div className="inactive ltr-omkt8s" tabIndex="0">
                             {
                                 // 영화
                                 // status != "loading" ? <Video isPlayMovie={isPlayMovie} setIsPlayMovie={setIsPlayMovie} status={status} setStatus={setStatus} /> : null
-                                movieData != null && movieData != '' ? <Video videoRef={videoRef} /> : null
+                                movieData != null && movieData != '' ? <Video videoRef={videoRef} redBtnRef={redBtnRef} redLineRef={redLineRef}
+                                                                              isPlayMovie={isPlayMovie} setIsPlayMovie={setIsPlayMovie} setMovieDuration={setMovieDuration}
+                                                                              timeLineBarRef={timeLineBarRef} currentPlayTime={currentPlayTime} setCurrentPlayTime={setCurrentPlayTime}
+                                                                              isUpdateNeed={isUpdateNeed} setIsUpdateNeed={setIsUpdateNeed} setStatus={setStatus} /> : null
                             }
                             {
                                 // 영화 조작 UI
@@ -125,8 +155,12 @@ function Watch() {
                                                              isPlayMovie={isPlayMovie} setIsPlayMovie={setIsPlayMovie} setPlayBackForward={setPlayBackForward}
                                                              disableClickBack={disableClickBack} disableClickForward={disableClickForward}
                                                              setDisableClickBack={setDisableClickBack} setDisableClickForward={setDisableClickForward}
-                                                             navigate={navigate} setShowTimeout={setShowTimeout} videoRef={videoRef}
-                                                             ariaValueRef={ariaValueRef} knobRef={knobRef} railRef={railRef} /> :
+                                                             navigate={navigate} setShowTimeout={setShowTimeout} videoRef={videoRef} ariaValueRef={ariaValueRef}
+                                                             knobRef={knobRef} railRef={railRef} timeLineBarRef={timeLineBarRef} tickRef={tickRef}
+                                                             tickLeftRef={tickLeftRef} tickRightRef={tickRightRef} redBtnRef={redBtnRef} redLineRef={redLineRef}
+                                                             movieDuration={movieDuration} setMovieDuration={setMovieDuration} prevTimeLineWidth={prevTimeLineWidth}
+                                                             currentPlayTime={currentPlayTime} setCurrentPlayTime={setCurrentPlayTime} isUpdateNeed={isUpdateNeed}
+                                                             setIsUpdateNeed={setIsUpdateNeed} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen}/> :
                                 status == "passive" && isPlayMovie == false ? <Passive /> : null
                             }
                         </div>
@@ -145,16 +179,16 @@ function Watch() {
                     }
 
                 </div>
-                <div className="visually-hidden screenReaderMessage" role="alert" aria-live="assertive">
-                    <span></span>
-                </div>
-                <div className="visually-hidden" style={{display: 'none'}}>
-                    <div id="standaloneAudioDescriptionAvailable">화면 해설이 제공됩니다</div>
-                    <div id="episodesAudioDescriptionAvailable">일부 에피소드에 화면 해설이 제공됩니다</div>
-                    <div id="standaloneTextClosedCaptionsAvailable">청각 장애인용 자막이 지원됩니다</div>
-                    <div id="episodicTextClosedCaptionsAvailable">일부 에피소드에 청각 장애인용 자막이 지원됩니다</div>
-                    <div id="playWithAudioDescription">화면 해설을 켠 채로 시작합니다</div>
-                </div>
+                {/*<div className="visually-hidden screenReaderMessage" role="alert" aria-live="assertive">*/}
+                {/*    <span></span>*/}
+                {/*</div>*/}
+                {/*<div className="visually-hidden" style={{display: 'none'}}>*/}
+                {/*    <div id="standaloneAudioDescriptionAvailable">화면 해설이 제공됩니다</div>*/}
+                {/*    <div id="episodesAudioDescriptionAvailable">일부 에피소드에 화면 해설이 제공됩니다</div>*/}
+                {/*    <div id="standaloneTextClosedCaptionsAvailable">청각 장애인용 자막이 지원됩니다</div>*/}
+                {/*    <div id="episodicTextClosedCaptionsAvailable">일부 에피소드에 청각 장애인용 자막이 지원됩니다</div>*/}
+                {/*    <div id="playWithAudioDescription">화면 해설을 켠 채로 시작합니다</div>*/}
+                {/*</div>*/}
             </div>
         </div>
     )
@@ -188,38 +222,6 @@ function PlayForward() {
     )
 }
 
-function getCalcValue(calcString) {
-    // calcString 형식 예시: "calc(39.8959px - 1.125rem)"
-    const regex = /calc\(([^)]+)\)/; // calc 내용 추출을 위한 정규식
-    const matches = calcString.match(regex);
-
-    if (matches && matches.length >= 2) {
-        const expression = matches[1]; // calc 내용 추출 (예시: "39.8959px - 1.125rem")
-        const tokens = expression.split(/\s+([+-])\s+/); // 공백과 연산자 기준으로 분리 (예시: ["39.8959px", "-", "1.125rem"])
-
-        // 현재 뷰포트의 font-size 기준으로 rem을 px로 변환
-        const fontSize = parseFloat(getComputedStyle(document.documentElement).fontSize); // 현재 뷰포트의 font-size
-        const remToPx = (rem) => rem * fontSize;
-
-        // 숫자 값을 추출하여 계산
-        let result = parseFloat(tokens[0]); // 첫 번째 숫자로 초기화
-        for (let i = 1; i < tokens.length; i += 2) {
-            const value = parseFloat(tokens[i]);
-            const unit = tokens[i + 1] || ''; // 연산자 다음에는 단위가 없을 수도 있으므로 기본값은 빈 문자열
-
-            if (unit === '-') {
-                result -= value;
-            } else if (unit === '+') {
-                result += value;
-            }
-        }
-
-        return result;
-    }
-
-    return 0;
-}
-
 // 음량 조절 게이지 컴포넌트
 function SoundBar(props) {
     let {showTimeout, ariaValueRef, railRef, knobRef, videoRef, prevRailHeight, setVolumeStatus} = props;
@@ -243,7 +245,7 @@ function SoundBar(props) {
         ariaValueRef.current.setAttribute('aria-valuenow', volume);
         videoRef.current.volume = volume; // 영화의 실제 볼륨 조절
         railRef.current.children[0].style.top = `${newTop}px`; // 볼륨 버튼 이동 시 레일의 빨간색 게이지 표시하기 위한 top
-        railRef.current.children[0].style.height = (railRef.current.offsetHeight - `${newTop}`) + 'px'; // 볼륨 버튼 이동 시 레일의 빨간색 게이지 표시하기 위한 height
+        railRef.current.children[0].style.height = `${railRef.current.offsetHeight - newTop}px`; // 볼륨 버튼 이동 시 레일의 빨간색 게이지 표시하기 위한 height
 
         volumeSvg(videoRef, setVolumeStatus);
 
@@ -279,15 +281,15 @@ function SoundBar(props) {
 
     const timeout = () => {
         setTimeout(() => {
-            const $muteBtn = document.getElementById('muteBtn').children[0];
-            const $soundBar = document.querySelector('.ltr-4dcwks');
-            $muteBtn.classList.remove('active');
-            $soundBar.classList.remove('show');
+            const muteBtn = document.getElementById('muteBtn').children[0];
+            const soundBar = document.querySelector('.ltr-4dcwks');
+            muteBtn.classList.remove('active');
+            soundBar.classList.remove('show');
         }, 300);
     }
 
     return (
-        <div className="ltr-4dcwks show" style={{left: '272px', top: '640px'}} onMouseOver={timeoutClear} onMouseLeave={timeout}>
+        <div className="ltr-4dcwks" style={{left: '272px', top: '640px'}} onMouseOver={timeoutClear} onMouseLeave={timeout}>
             <div className="ltr-f9fjby">
                 <div className="watch-video--scrubber-volume-container medium" data-uia="watch-video-volume-content"
                      onPointerDown={volumePointerDown}
@@ -358,11 +360,43 @@ function Loading() {
 
 // 영화
 function Video(props) {
+    let {videoRef, redBtnRef, redLineRef, isPlayMovie, setIsPlayMovie, setMovieDuration, timeLineBarRef,
+        currentPlayTime, setCurrentPlayTime, isUpdateNeed, setIsUpdateNeed, setStatus} = props;
+
+    useEffect(() => {
+        if(isPlayMovie) {
+            const interval = setInterval(() => {
+                setCurrentPlayTime((prevTime) => prevTime + 1);
+                if(window.common.isEmpty(timeLineBarRef.current) && isUpdateNeed == false) {
+                    setIsUpdateNeed(true);
+                }
+            }, 1000);
+
+            return () => clearInterval(interval);
+        }
+    }, [isPlayMovie]);
+
+    useEffect(() => {
+        if(window.common.isEmpty(timeLineBarRef.current)) return;
+        timelineBarUpdate(timeLineBarRef, videoRef, currentPlayTime, redLineRef, redBtnRef, setMovieDuration);
+    }, [currentPlayTime]);
+
     return (
         <div className="ltr-1212o1j" data-uia="video-canvas" style={{display: 'none'}}>
             <div style={{position: 'relative', width: '100%', height: '100%', overflow: 'hidden'}}>
                 <div style={{position: 'relative', width: '100%', height: '100%', overflow: 'hidden'}}>
-                    <video ref={props.videoRef} id="movie" onEnded={() => {document.getElementById('moviePlay').click();}} src="https://www.kmdb.or.kr/trailer/play/MK059186_P02.mp4" style={{width: '100%', height: '1208px'}}/>
+                    <video ref={videoRef} id="movie" onEnded={() => {
+                        setIsPlayMovie(false);
+                        setCurrentPlayTime(0);
+                        setStatus('ended');
+                        setMovieDuration(convertToHHMM(videoRef.current.duration));
+                        if(window.common.isNotEmpty(redBtnRef.current) && window.common.isNotEmpty(redLineRef.current)) {
+                            redBtnRef.current.style.left = 'calc(0px - 0.75rem)';
+                            redLineRef.current.style.width = '0px';
+                        }
+                        localStorage.setItem('redLineWidth', '0px');
+                        localStorage.setItem('redBtnLeft', 'calc(0px - 0.75rem)');
+                    }} src="https://www.kmdb.or.kr/trailer/play/MK059186_P02.mp4" style={{width: '100%', height: '1208px'}}/>
                     <div className="player-timedtext" style={{display: 'none', direction: 'ltr'}} />
                 </div>
             </div>
@@ -371,12 +405,12 @@ function Video(props) {
 }
 
 // 재생버튼
-function moviePlayBtn(isPlayMovie, setIsPlayMovie) {
+function moviePlayBtn(isPlayMovie, setIsPlayMovie, videoRef) {
     if(isPlayMovie) {
-        document.getElementById('movie').pause();
+        videoRef.current.pause();
     }
     else {
-        document.getElementById('movie').play();
+        videoRef.current.play();
     }
     setIsPlayMovie(!isPlayMovie);
 }
@@ -440,18 +474,120 @@ function Active(props) {
     let {movieData, volumeStatus, setVolumeStatus, isPlayMovie, setIsPlayMovie, setPlayBackForward
         , disableClickBack, disableClickForward, setDisableClickBack, setDisableClickForward
         , navigate, setShowTimeout, videoRef, ariaValueRef, knobRef, railRef, timeLineBarRef
-        , tickRef, tickLeftRef , redBtnRef, redLineRef} = props;
+        , tickRef, tickLeftRef, tickRightRef, redBtnRef, redLineRef, movieDuration, setMovieDuration
+        , prevTimeLineWidth, currentPlayTime, setCurrentPlayTime, isUpdateNeed, setIsUpdateNeed
+        , isFullScreen, setIsFullScreen} = props;
 
     useEffect(() => {
         document.getElementById('movieTitle').innerText = movieData[0].title;
-        document.getElementById('movieDuration').innerText = convertToHHMM(document.getElementById('movie').duration);
+        prevTimeLineWidth.current = timeLineBarRef.current.offsetWidth;
+
+        if(isUpdateNeed) {
+            timelineBarUpdate(timeLineBarRef, videoRef, currentPlayTime, redLineRef, redBtnRef, setMovieDuration);
+            setIsUpdateNeed(false);
+        }
     }, []);
+
+    const [isDragging, setIsDragging] = useState(false);
+    let [trickMovieTime, setTrickMovieTime] = useState(0);
+    const timeLineRef = useRef(null);
+    const trickImageRef = useRef(null);
+    const fullScreenRef = useRef(null);
+
+    useEffect(() => {
+        tickLeftRef.current = tickRef.current.getBoundingClientRect().left;
+        tickRightRef.current = Math.round(window.innerWidth - tickRef.current.parentNode.getBoundingClientRect().right);
+    }, [tickRef]);
+
+    // 음소거 버튼 클릭
+    const movieMutedClick = () => {
+        chgVolumeStatus(videoRef, setVolumeStatus, ariaValueRef, knobRef, railRef);
+    }
+
+    const timeLinePointerMove = (event) => {
+        // setIsPointerMove(true);
+        // 틱 표시
+        timeLineRef.current.classList.add('active');
+
+        const tickNewLeft = event.clientX - tickLeftRef.current;
+        tickRef.current.style.left = `${tickNewLeft}px`;
+
+        // 타임라인 바에 마우스 오버 시 바로 위에 이동 시간 표시
+        let trickDiv = timeLineRef.current.children[1];
+        trickDiv.classList.add('show');
+
+        let trickOffsetWidth = trickDiv.offsetWidth;
+        let trickMinLeft = trickOffsetWidth / 2;
+        let trickMaxLeft = window.innerWidth - (trickOffsetWidth / 2);
+        let trickLeft = 0;
+        let trickTop = 0;
+
+        // trick영역이 화면 밖으로 벗어나지 않기 위함
+        if(trickMinLeft > event.clientX) {
+            // 왼쪽으로 벗어날 때
+            trickLeft = `-${tickLeftRef.current}px`;
+        }
+        else if(trickMaxLeft < event.clientX) {
+            // 오른쪽으로 벗어날 때
+            trickLeft = `${window.innerWidth - (trickOffsetWidth + tickLeftRef.current)}px`;
+        }
+        else {
+            trickLeft = `${(tickNewLeft - trickOffsetWidth / 2)}px`;
+        }
+        trickTop = `${Math.floor(timeLineBarRef.current.getBoundingClientRect().top) - window.innerHeight - Math.floor(trickDiv.offsetHeight / 2)}px`;
+
+        trickDiv.style.left = trickLeft;
+        trickDiv.style.top = trickTop;
+
+        setTrickMovieTime(Math.floor((event.clientX / timeLineBarRef.current.offsetWidth) * videoRef.current.duration));
+
+        trickImageRef.current.src = 'http://file.koreafilm.or.kr/still/copy/00/64/40/DST798040_01.jpg';     // trick영역에 이미지 넣기
+        document.querySelector('.trick-play-text').innerText = convertToHHMM(trickMovieTime);       // trick영역에 영화 이동 시간 setting
+
+        if (!isDragging) return;
+        timeLineControl(event);
+    }
+
+    const timeLinePointerUp = () => {
+        setMovieDuration(convertToHHMM(videoRef.current.duration-trickMovieTime));
+        setIsDragging(false);
+    }
+
+    const timeLinePointerDown = (event) => {
+        setIsDragging(true);
+        timeLineControl(event);
+    }
+
+    const timeLinePointerLeave = () => {
+        timeLineRef.current.classList.remove('active');
+        tickRef.current.style.left = '0px';
+        setIsDragging(false);
+
+        timeLineRef.current.children[1].classList.remove('show');
+        trickImageRef.current.src = '';
+    }
+
+    const timeLineControl = (event) => {
+        const barRect = timeLineBarRef.current.getBoundingClientRect();
+        const leftOffset = event.clientX - timeLineRef.current.getBoundingClientRect().left;
+        const newLeftOffset = Math.max(0, Math.min(leftOffset, barRect.width));
+
+        redLineRef.current.style.width = `${newLeftOffset}px`;
+        redBtnRef.current.style.left = `calc(${newLeftOffset}px - 0.75rem)`;
+        localStorage.setItem('redLineWidth', redLineRef.current.style.width);
+        localStorage.setItem('redBtnLeft', redBtnRef.current.style.left);
+
+        // 영화 재생 시간 = (버튼이 드래그되는 위치 / 타임라인 바의 가로 길이) * 전체 영화 재생 시간
+        const currentTimeInSeconds = (newLeftOffset / barRect.width) * videoRef.current.duration;
+        videoRef.current.currentTime = currentTimeInSeconds;
+        setCurrentPlayTime(currentTimeInSeconds);
+    }
 
     return (
         <div className="ltr-16tr625" style={{alignItems: 'normal', justifyContent: 'flex-end'}}>
             <div className="ltr-1jnlk6v" style={{alignItems: 'flex-start', flexGrow: '1', justifyContent: 'flex-start'}}>
                 <div className="ltr-14rufaj" style={{alignItems: 'normal', justifyContent: 'normal'}}>
-                    <div className="watch-video--back-container ltr-1jnlk6v" onClick={() => {moviePlayBtn(isPlayMovie, setIsPlayMovie)}} style={{alignItems: 'normal', flexGrow: '1', justifyContent: 'flex-start'}}>
+                    <div className="watch-video--back-container ltr-1jnlk6v" onClick={() => {moviePlayBtn(isPlayMovie, setIsPlayMovie, videoRef)}} style={{alignItems: 'normal', flexGrow: '1', justifyContent: 'flex-start'}}>
                         <div className="medium ltr-my293h">
                             <button aria-label="Back to Browse" className=" ltr-14ph5iy" data-uia="control-nav-back" onClick={() => {navigate('/Browse')}}>
                                 <div className="control-medium ltr-1evcx25" role="presentation">
@@ -462,7 +598,7 @@ function Active(props) {
                             </button>
                         </div>
                     </div>
-                    <div className="watch-video--flag-container ltr-1jnlk6v" onClick={() => {moviePlayBtn(isPlayMovie, setIsPlayMovie)}} style={{alignItems: 'normal', flexGrow: '1', justifyContent: 'flex-end'}}>
+                    <div className="watch-video--flag-container ltr-1jnlk6v" onClick={() => {moviePlayBtn(isPlayMovie, setIsPlayMovie, videoRef)}} style={{alignItems: 'normal', flexGrow: '1', justifyContent: 'flex-end'}}>
                         <div className="medium ltr-my293h">
                             <button aria-label="Netflix 재생 문제 신고" className=" ltr-14ph5iy" data-uia="control-flag">
                                 <div className="control-medium ltr-1evcx25" role="presentation">
@@ -479,33 +615,37 @@ function Active(props) {
                 <div className="ltr-1qb0uev">
                     <div className="ltr-1bt0omd">
                         <div className="ltr-14rufaj" style={{alignItems: 'normal', justifyContent: 'normal'}}>
-                            <div className="ltr-1jnlk6v" style={{alignItems: 'center', flexGrow: '1', justifyContent: 'normal'}}>
+                            <div className="ltr-1jnlk6v" style={{alignItems: 'center', flexGrow: '1', justifyContent: 'normal'}}
+                                 onPointerMove={timeLinePointerMove}
+                                 onPointerUp={timeLinePointerUp}
+                                 onPointerDown={timeLinePointerDown}
+                                 onPointerLeave={timeLinePointerLeave}
+                            >
 
-                                <div aria-orientation="horizontal" className="medium ltr-uykqh0" data-uia="timeline" role="slider" tabIndex="-1">
-                                    <div data-uia="timeline-bar" className="ltr-yzurhj">
+                                <div ref={timeLineRef} aria-orientation="horizontal" className="medium ltr-uykqh0" data-uia="timeline" role="slider" tabIndex="-1">
+                                    <div ref={timeLineBarRef} data-uia="timeline-bar" className="ltr-yzurhj">
                                         <div className="ltr-1jssjem" />
-                                        <div className="ltr-1xfifdu" />
-                                        <div className="ltr-ai5t3i" />
-                                        <div aria-label="재생 시간 표시줄" aria-valuemax="6520208" className="ltr-1gidbvb" style={{left: 'calc(0px - 0.75rem)'}}></div>
+                                        <div ref={redLineRef} className="ltr-1xfifdu" />
+                                        <div ref={tickRef} className="ltr-ai5t3i" />
+                                        <div ref={redBtnRef} aria-label="재생 시간 표시줄" aria-valuemax="6520208" className="ltr-1gidbvb" style={{left: 'calc(0px - 0.75rem)'}}></div>
                                     </div>
 
-                                    {/*<div className="ltr-1kex6ih show" style={{left: '309px', top: '-160px'}}>*/}
-                                    {/*    <div className="ltr-f9fjby">*/}
-                                    {/*        <div className="medium ltr-l5iwyw" data-uia="trick-play">*/}
-                                    {/*            <div data-uia="trick-play-image">*/}
-                                    {/*                <img alt="" src="blob:https://www.netflix.com/30521b6d-320b-4fba-a24b-75883cb2ae2a"/>*/}
-                                    {/*            </div>*/}
-                                    {/*            <div className="trick-play-text" data-uia="trick-play-text">30:05</div>*/}
-                                    {/*        </div>*/}
-                                    {/*    </div>*/}
-                                    {/*</div>*/}
+                                    <div className="ltr-1kex6ih">
+                                        <div className="ltr-f9fjby">
+                                            <div className="medium ltr-l5iwyw" data-uia="trick-play">
+                                                <div data-uia="trick-play-image">
+                                                    <img ref={trickImageRef} src='' />
+                                                </div>
+                                                <div className="trick-play-text" data-uia="trick-play-text">00:00</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-
-
                             <div className="ltr-vpjz8w" style={{alignItems: 'center', justifyContent: 'center'}}>
                                 <span className="ltr-13tzgng" id='movieDuration'>
+                                    {movieDuration}
                                 </span>
                             </div>
                         </div>
@@ -514,7 +654,7 @@ function Active(props) {
                             <div className="ltr-14rufaj" style={{alignItems: 'normal', justifyContent: 'normal'}}>
                                 <div className="ltr-1jnlk6v" style={{alignItems: 'normal', justifyContent: 'normal'}}>
                                     <div className="medium ltr-my293h">
-                                        <button aria-label="재생" id='moviePlay' className=" ltr-14ph5iy" onClick={() => {moviePlayBtn(props.isPlayMovie, props.setIsPlayMovie)}}>
+                                        <button aria-label="재생" id='moviePlay' className=" ltr-14ph5iy" onClick={() => {moviePlayBtn(isPlayMovie, setIsPlayMovie, videoRef)}}>
                                             <div className="control-medium ltr-1evcx25" role="presentation">
                                                 {
                                                     props.isPlayMovie ?
@@ -532,9 +672,9 @@ function Active(props) {
                                     <div className="ltr-14rufaj" style={{minWidth: '3rem', width: '3rem'}} />
                                     <div className="medium ltr-my293h">
                                         <button aria-label="뒤로 가기" className=" ltr-14ph5iy" onClick={() => {
-                                            if(disableClickBack) return;
-                                            playBackForward('back', setPlayBackForward, setDisableClickBack, setDisableClickForward)}
-                                        }>
+                                            if(videoRef.current.ended || disableClickBack) return;
+                                            playBackForward('back', setPlayBackForward, setDisableClickBack, setDisableClickForward, videoRef, currentPlayTime, setCurrentPlayTime);
+                                        }}>
                                             <div className="control-medium ltr-1evcx25" role="presentation">
                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr-0 e1mhci4z1" data-name="Back10" aria-hidden="true">
                                                     <path fillRule="evenodd" clipRule="evenodd" d="M11.0198 2.04817C13.3222 1.8214 15.6321 2.39998 17.5557 3.68532C19.4794 4.97067 20.8978 6.88324 21.5694 9.09718C22.241 11.3111 22.1242 13.6894 21.2388 15.8269C20.3534 17.9643 18.7543 19.7286 16.714 20.8192C14.6736 21.9098 12.3182 22.2592 10.0491 21.8079C7.77999 21.3565 5.73759 20.1323 4.26989 18.3439C2.80219 16.5555 2 14.3136 2 12L0 12C-2.74181e-06 14.7763 0.962627 17.4666 2.72387 19.6127C4.48511 21.7588 6.93599 23.2278 9.65891 23.7694C12.3818 24.3111 15.2083 23.8918 17.6568 22.5831C20.1052 21.2744 22.0241 19.1572 23.0866 16.5922C24.149 14.0273 24.2892 11.1733 23.4833 8.51661C22.6774 5.85989 20.9752 3.56479 18.6668 2.02238C16.3585 0.479975 13.5867 -0.214319 10.8238 0.057802C8.71195 0.2658 6.70517 1.02859 5 2.2532V1H3V5C3 5.55229 3.44772 6 4 6H8V4H5.99999C7.45608 2.90793 9.19066 2.22833 11.0198 2.04817ZM2 4V7H5V9H1C0.447715 9 0 8.55229 0 8V4H2ZM14.125 16C13.5466 16 13.0389 15.8586 12.6018 15.5758C12.1713 15.2865 11.8385 14.8815 11.6031 14.3609C11.3677 13.8338 11.25 13.2135 11.25 12.5C11.25 11.7929 11.3677 11.1759 11.6031 10.6488C11.8385 10.1217 12.1713 9.71671 12.6018 9.43389C13.0389 9.14463 13.5466 9 14.125 9C14.7034 9 15.2077 9.14463 15.6382 9.43389C16.0753 9.71671 16.4116 10.1217 16.6469 10.6488C16.8823 11.1759 17 11.7929 17 12.5C17 13.2135 16.8823 13.8338 16.6469 14.3609C16.4116 14.8815 16.0753 15.2865 15.6382 15.5758C15.2077 15.8586 14.7034 16 14.125 16ZM14.125 14.6501C14.5151 14.6501 14.8211 14.4637 15.043 14.0909C15.2649 13.7117 15.3759 13.1814 15.3759 12.5C15.3759 11.8186 15.2649 11.2916 15.043 10.9187C14.8211 10.5395 14.5151 10.3499 14.125 10.3499C13.7349 10.3499 13.4289 10.5395 13.207 10.9187C12.9851 11.2916 12.8741 11.8186 12.8741 12.5C12.8741 13.1814 12.9851 13.7117 13.207 14.0909C13.4289 14.4637 13.7349 14.6501 14.125 14.6501ZM8.60395 15.8554V10.7163L7 11.1405V9.81956L10.1978 9.01929V15.8554H8.60395Z" fill="currentColor"></path>
@@ -545,9 +685,9 @@ function Active(props) {
                                     <div className="ltr-14rufaj" style={{minWidth: '3rem', width: '3rem'}} />
                                     <div className="medium ltr-my293h">
                                         <button aria-label="앞으로 가기" className=" ltr-14ph5iy" onClick={() => {
-                                            if(disableClickForward) return;
-                                            playBackForward('forward', setPlayBackForward, setDisableClickBack, setDisableClickForward)}
-                                        }>
+                                            if(videoRef.current.ended || disableClickForward) return;
+                                            playBackForward('forward', setPlayBackForward, setDisableClickBack, setDisableClickForward, videoRef, currentPlayTime, setCurrentPlayTime);
+                                        }}>
                                             <div className="control-medium ltr-1evcx25" role="presentation">
                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr-0 e1mhci4z1" aria-hidden="true">
                                                     <path fillRule="evenodd" clipRule="evenodd" d="M6.4443 3.68532C8.36794 2.39998 10.6778 1.8214 12.9802 2.04817C14.8093 2.22833 16.5439 2.90793 18 4H16V6H20C20.5523 6 21 5.55228 21 5V1H19V2.2532C17.2948 1.02858 15.288 0.265799 13.1762 0.0578004C10.4133 -0.214321 7.64153 0.479973 5.33315 2.02238C3.02478 3.56479 1.32262 5.85989 0.516716 8.51661C-0.28919 11.1733 -0.148983 14.0273 0.913448 16.5922C1.97588 19.1572 3.8948 21.2744 6.34325 22.5831C8.79169 23.8918 11.6182 24.3111 14.3411 23.7694C17.064 23.2278 19.5149 21.7588 21.2761 19.6127C23.0374 17.4666 24 14.7763 24 12L22 12C22 14.3136 21.1978 16.5555 19.7301 18.3439C18.2624 20.1323 16.22 21.3565 13.9509 21.8079C11.6818 22.2592 9.32641 21.9098 7.28604 20.8192C5.24567 19.7286 3.64657 17.9643 2.76121 15.8269C1.87585 13.6894 1.75901 11.3111 2.4306 9.09717C3.10218 6.88324 4.52065 4.97066 6.4443 3.68532ZM22 4V7H19V9H23C23.5523 9 24 8.55228 24 8V4H22ZM12.6018 15.5758C13.0389 15.8586 13.5466 16 14.125 16C14.7034 16 15.2077 15.8586 15.6382 15.5758C16.0753 15.2865 16.4116 14.8815 16.6469 14.3609C16.8823 13.8338 17 13.2135 17 12.5C17 11.7929 16.8823 11.1758 16.6469 10.6488C16.4116 10.1217 16.0753 9.71671 15.6382 9.43388C15.2077 9.14463 14.7034 9 14.125 9C13.5466 9 13.0389 9.14463 12.6018 9.43388C12.1713 9.71671 11.8385 10.1217 11.6031 10.6488C11.3677 11.1758 11.25 11.7929 11.25 12.5C11.25 13.2135 11.3677 13.8338 11.6031 14.3609C11.8385 14.8815 12.1713 15.2865 12.6018 15.5758ZM15.043 14.0909C14.8211 14.4637 14.5151 14.6501 14.125 14.6501C13.7349 14.6501 13.4289 14.4637 13.207 14.0909C12.9851 13.7117 12.8741 13.1814 12.8741 12.5C12.8741 11.8186 12.9851 11.2916 13.207 10.9187C13.4289 10.5395 13.7349 10.3499 14.125 10.3499C14.5151 10.3499 14.8211 10.5395 15.043 10.9187C15.2649 11.2916 15.3759 11.8186 15.3759 12.5C15.3759 13.1814 15.2649 13.7117 15.043 14.0909ZM8.60395 10.7163V15.8554H10.1978V9.01928L7 9.81956V11.1405L8.60395 10.7163Z" fill="currentColor"></path>
@@ -594,7 +734,17 @@ function Active(props) {
                                     </div>
                                     <div className="ltr-14rufaj" style={{minWidth: '3rem', width: '3rem'}}></div>
                                     <div className="medium ltr-my293h">
-                                        <button aria-label="전체 화면" className=" ltr-14ph5iy">
+                                        <button ref={fullScreenRef} aria-label="전체 화면" className=" ltr-14ph5iy"
+                                            onClick={() => {
+                                                fullScreen(isFullScreen, setIsFullScreen);
+                                            }}
+                                            onMouseOver={() => {
+                                                fullScreenRef.current.classList.add('active');
+                                            }}
+                                            onMouseLeave={() => {
+                                                fullScreenRef.current.classList.remove('active');
+                                            }}
+                                        >
                                             <div className="control-medium ltr-1evcx25" role="presentation">
                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr-0 e1mhci4z1" aria-hidden="true">
                                                     <path fillRule="evenodd" clipRule="evenodd" d="M0 5C0 3.89543 0.895431 3 2 3H9V5H2V9H0V5ZM22 5H15V3H22C23.1046 3 24 3.89543 24 5V9H22V5ZM2 15V19H9V21H2C0.895431 21 0 20.1046 0 19V15H2ZM22 19V15H24V19C24 20.1046 23.1046 21 22 21H15V19H22Z" fill="currentColor"></path>
@@ -678,7 +828,7 @@ function Passive() {
 }
 
 function TimerComponent(props) {
-    const {status, setStatus, isPlayMovie, setIsPlayMovie} = props;
+    const {status, setStatus, isPlayMovie, setIsPlayMovie, videoRef, isFullScreen, setIsFullScreen} = props;
     let [changeTimeout, setChangeTimeout] = useState();
     let timeout;
 
@@ -689,6 +839,9 @@ function TimerComponent(props) {
 
     // timeout 경과 시
     const onIdle = () => {
+        if(status == 'active' && isFullScreen) {
+            document.querySelector('.watch-video').style.cursor = 'none';
+        }
         changeUI('inactive');
 
         if (isPlayMovie == false && document.querySelector('.ltr-omkt8s').classList[0] == 'inactive') {
@@ -708,8 +861,16 @@ function TimerComponent(props) {
         changeUI('active');
 
         // 스페이스바 입력
-        if(event.code == 'Space') {
-            moviePlayBtn(props.isPlayMovie, props.setIsPlayMovie);
+        if(event.code == 'Space' || event.code == 'Enter') {
+            moviePlayBtn(isPlayMovie, setIsPlayMovie, videoRef);
+        }
+
+        if(event.code == 'F11') {
+            fullScreen(isFullScreen, setIsFullScreen);
+        }
+
+        if(isFullScreen) {
+            document.querySelector('.watch-video').style.cursor = 'default';
         }
     }
 
@@ -738,31 +899,38 @@ function convertToHHMM(totalSeconds) {
 }
 
 // 영화 10초 전 후 이동
-function playBackForward(type, setPlayBackForward, setDisableClickBack, setDisableClickForward) {
+function playBackForward(type, setPlayBackForward, setDisableClickBack, setDisableClickForward, videoRef, currentPlayTime, setCurrentPlayTime) {
+    // currentPlayTime값을 변경하면 useEffect 의존성 때문에 timelineBarUpdate호출
     if(type == 'back') {
-        document.getElementById('movie').currentTime -= 10;
-        setPlayBackForward('back');
-        setDisableClickBack(true);
-        setTimeout(() => {
-            setPlayBackForward('');
-            setDisableClickBack(false);
-        }, 500);
+        if(currentPlayTime > 0) {
+            videoRef.current.currentTime -= 10;
+            setPlayBackForward('back');
+            setDisableClickBack(true);
+            setCurrentPlayTime(Math.max(0, Number(currentPlayTime-10)));
+            setTimeout(() => {
+                setPlayBackForward('');
+                setDisableClickBack(false);
+            }, 500);
+        }
     }
     else if(type == 'forward') {
-        document.getElementById('movie').currentTime += 10;
-        setPlayBackForward('forward');
-        setDisableClickForward(true);
-        setTimeout(() => {
-            setPlayBackForward('');
-            setDisableClickForward(false);
-        }, 500);
+        if(Number(currentPlayTime+10) < videoRef.current.duration) {
+            videoRef.current.currentTime += 10;
+            setPlayBackForward('forward');
+            setDisableClickForward(true);
+            setCurrentPlayTime(Math.min(videoRef.current.duration, Number(currentPlayTime + 10)));
+            setTimeout(() => {
+                setPlayBackForward('');
+                setDisableClickForward(false);
+            }, 500);
+        }
     }
 }
 
 // 음량 조절 바 생성
 function movieMutedMouseOver(e) {
-    const $muteBtn = e.target.parentNode.parentNode;
-    const $soundBar = document.querySelector('.ltr-4dcwks');
+    const muteBtn = e.target.parentNode.parentNode;
+    const soundBar = document.querySelector('.ltr-4dcwks');
 
     const muteBtnRect = document.getElementById('muteBtn').getBoundingClientRect();
     const soundBarRect = document.querySelector('.ltr-4dcwks').getBoundingClientRect();
@@ -770,26 +938,54 @@ function movieMutedMouseOver(e) {
     let left = Math.floor(muteBtnRect.x) + 5;
     let top = Math.floor(muteBtnRect.y - soundBarRect.height) - 10;
 
-    if($muteBtn.classList.contains('active') == false) {
-        $muteBtn.className = 'active ' + $muteBtn.className;
+    if(muteBtn.classList.contains('active') == false) {
+        muteBtn.className = 'active ' + muteBtn.className;
     }
-    if($soundBar.classList.contains('show') == false) {
-        $soundBar.style.left = `${left}px`;
-        $soundBar.style.top = `${top}px`;
-        $soundBar.classList.add('show');
+    if(soundBar.classList.contains('show') == false) {
+        soundBar.style.left = `${left}px`;
+        soundBar.style.top = `${top}px`;
+        soundBar.classList.add('show');
     }
 }
 
 function movieMutedMouseLeave(e, setShowTimeout) {
-    const $muteBtn = e.target.parentNode.parentNode;
-    const $soundBar = document.querySelector('.ltr-4dcwks');
+    const muteBtn = e.target.parentNode.parentNode;
+    const soundBar = document.querySelector('.ltr-4dcwks');
 
     let showTimeout = setTimeout(() => {
-        $muteBtn.classList.remove('active');
-        $soundBar.classList.remove('show');
+        muteBtn.classList.remove('active');
+        soundBar.classList.remove('show');
     }, 300);
 
     setShowTimeout(showTimeout);
+}
+
+function timelineBarUpdate(timeLineBarRef, videoRef, currentPlayTime, redLineRef, redBtnRef, setMovieDuration) {
+    // 영화 재생 시간이 업데이트될 때마다 타임라인 바를 업데이트하는 로직
+    // 영화의 현재 재생 시간을 타임라인 바의 길이에 대한 비율로 변환 - (현재 재생 시간 / 전체 재생 시간) * 타임라인 바 전체 길이
+    const timelineBarWidth = timeLineBarRef.current.offsetWidth;
+    const movieDuration = videoRef.current.duration;
+    const timelineRatio = (currentPlayTime / movieDuration) * timelineBarWidth;
+
+    if(window.common.isNotEmpty(timeLineBarRef.current) && window.common.isNotEmpty(timeLineBarRef.current)) {
+        redLineRef.current.style.width = `${timelineRatio}px`;
+        redBtnRef.current.style.left = `calc(${timelineRatio}px - 0.75rem)`;
+    }
+
+    setMovieDuration(convertToHHMM(movieDuration-currentPlayTime));
+
+    localStorage.setItem('currentDuration', convertToHHMM(movieDuration-currentPlayTime));
+    localStorage.setItem('redLineWidth', redLineRef.current.style.width);
+    localStorage.setItem('redBtnLeft', redBtnRef.current.style.left);
+}
+
+function fullScreen(isFullScreen, setIsFullScreen) {
+    if(isFullScreen) {
+        setIsFullScreen(false);
+    }
+    else {
+        setIsFullScreen(true);
+    }
 }
 
 export default Watch;
