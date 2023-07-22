@@ -47,8 +47,6 @@ function Watch() {
             localStorage.setItem('movieVolume', '0.5');
         }
 
-        // 영화 정보 가져오기 (movieData를 실제로 사용하진 않지만 하드코딩이 아니라면 이렇게 사용했을 것 같아 로직 구현)
-        // 현재는 하드코딩 되어 있음
         getKMDBMovieOne(movieId, movieSeq)
         .catch((err) => {
             console.log(err.code);
@@ -79,9 +77,11 @@ function Watch() {
                     document.getElementById('movie').volume = localStorage.getItem('movieVolume');
                     volumeSvg(videoRef, setVolumeStatus);
                     ariaValueRef.current.setAttribute('aria-valuenow', localStorage.getItem('movieVolume'))
-                    knobRef.current.style.top = localStorage.getItem('knobTop');
-                    railRef.current.children[0].style.top = localStorage.getItem('railTop');
-                    railRef.current.children[0].style.height = localStorage.getItem('railHeight');
+                    if(window.common.isNotEmpty(localStorage.getItem('knobTop'))) {
+                        knobRef.current.style.top = localStorage.getItem('knobTop');
+                        railRef.current.children[0].style.top = localStorage.getItem('railTop');
+                        railRef.current.children[0].style.height = localStorage.getItem('railHeight');
+                    }
                 }
             }, 2500);
         });
@@ -304,8 +304,8 @@ function SoundBar(props) {
                              onPointerDown={volumePointerDown}
                              onPointerUp={volumePointerUp}
                         >
-                            <div data-uia="scrubber-rail-filled" className="ltr-1bhvfwo" style={{top: '0', width: '100%'}} />
-                            <div ref={knobRef} data-uia="scrubber-knob" className="ltr-16i8klm" style={{left: '-0.5625rem', top: '0'}} />
+                            <div data-uia="scrubber-rail-filled" className="ltr-1bhvfwo" style={{top: '50%', width: '100%', height: '50%'}} />
+                            <div ref={knobRef} data-uia="scrubber-knob" className="ltr-16i8klm" style={{left: '-0.5625rem', top: '50%'}} />
                         </div>
                     </div>
                 </div>
@@ -839,9 +839,7 @@ function TimerComponent(props) {
 
     // timeout 경과 시
     const onIdle = () => {
-        if(status == 'active' && isFullScreen) {
-            document.querySelector('.watch-video').style.cursor = 'none';
-        }
+        document.querySelector('.ltr-omkt8s').style.cursor = 'none';
         changeUI('inactive');
 
         if (isPlayMovie == false && document.querySelector('.ltr-omkt8s').classList[0] == 'inactive') {
@@ -869,9 +867,7 @@ function TimerComponent(props) {
             fullScreen(isFullScreen, setIsFullScreen);
         }
 
-        if(isFullScreen) {
-            document.querySelector('.watch-video').style.cursor = 'default';
-        }
+        document.querySelector('.ltr-omkt8s').style.cursor = 'default';
     }
 
     return (
