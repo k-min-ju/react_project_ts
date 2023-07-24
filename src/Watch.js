@@ -6,7 +6,7 @@ import {ClipLoader} from "react-spinners";
 import {IdleTimerProvider} from 'react-idle-timer';
 
 function Watch() {
-    const {movieId, movieSeq} = useParams();                         // KMDb에 조회 요청할 영화 parameter
+    const {movieId, movieSeq, movieVal} = useParams();               // 영화 parameter
     let [status, setStatus] = useState('loading');          // loading : 로딩바 표시, active : 영화 상단, 하단 UI표시, passive : 영화 중지 상태일 때 영화에 대한 설명 표시
     let [isPlayMovie, setIsPlayMovie] = useState(false);    // true : 영화 상영중, false : 영화 중지
     let [movieData, setMovieData] = useState();                      // KMDb에 요청한 영화 DATA
@@ -144,7 +144,7 @@ function Watch() {
                             {
                                 // 영화
                                 // status != "loading" ? <Video isPlayMovie={isPlayMovie} setIsPlayMovie={setIsPlayMovie} status={status} setStatus={setStatus} /> : null
-                                movieData != null && movieData != '' ? <Video videoRef={videoRef} redBtnRef={redBtnRef} redLineRef={redLineRef}
+                                movieData != null && movieData != '' ? <Video movieVal={movieVal} videoRef={videoRef} redBtnRef={redBtnRef} redLineRef={redLineRef}
                                                                               isPlayMovie={isPlayMovie} setIsPlayMovie={setIsPlayMovie} setMovieDuration={setMovieDuration}
                                                                               timeLineBarRef={timeLineBarRef} currentPlayTime={currentPlayTime} setCurrentPlayTime={setCurrentPlayTime}
                                                                               isUpdateNeed={isUpdateNeed} setIsUpdateNeed={setIsUpdateNeed} setStatus={setStatus} /> : null
@@ -360,7 +360,7 @@ function Loading() {
 
 // 영화
 function Video(props) {
-    let {videoRef, redBtnRef, redLineRef, isPlayMovie, setIsPlayMovie, setMovieDuration, timeLineBarRef,
+    let {movieVal, videoRef, redBtnRef, redLineRef, isPlayMovie, setIsPlayMovie, setMovieDuration, timeLineBarRef,
         currentPlayTime, setCurrentPlayTime, isUpdateNeed, setIsUpdateNeed, setStatus} = props;
 
     useEffect(() => {
@@ -396,7 +396,8 @@ function Video(props) {
                         }
                         localStorage.setItem('redLineWidth', '0px');
                         localStorage.setItem('redBtnLeft', 'calc(0px - 0.75rem)');
-                    }} src="https://www.kmdb.or.kr/trailer/play/MK059186_P02.mp4" style={{width: '100%', height: '1208px'}}/>
+                    // }} src="https://www.kmdb.or.kr/trailer/play/MK059186_P02.mp4" style={{width: '100%', height: '1208px'}}/>
+                    }} src={`https://www.kmdb.or.kr/trailer/play/${movieVal}.mp4`} style={{width: '100%', height: '1208px'}}/>
                     <div className="player-timedtext" style={{display: 'none', direction: 'ltr'}} />
                 </div>
             </div>

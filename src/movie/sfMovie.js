@@ -22,6 +22,8 @@ function SFMovie(props) {
         },
     };
 
+    const movieJsonData = window.common.getMovieJsonData();
+
     return (
         <div>
             <div className="lolomoRow lolomoRow_title_card ltr-0" data-list-context="newRelease">
@@ -74,7 +76,7 @@ function SFMovie(props) {
                                                                 <div className={'title-card-container ltr-' + index}>
                                                                     <div id={'title-card-1-' + index} className="title-card">
                                                                         <div className="ptrack-content" data-ui-tracking-context="" data-tracking-uuid="">
-                                                                            <a href="/watch/81264371?tctx=1%2C0%2C%2C%2C%2C%2C%2C%2C%2CVideo%3A81264371%2C" role="link" aria-label={item.title} tabIndex="0" aria-hidden="false" className="slider-refocus">
+                                                                            <a href={`watch/${item.movieId}/${item.movieSeq}/${movieJsonData[Math.floor(Math.random() * 28)].movieVal}`} role="link" aria-label={item.title} tabIndex="0" aria-hidden="false" className="slider-refocus">
                                                                                 <div className="boxart-size-16x9 boxart-container boxart-rounded" style={{height: '170px'}}>
                                                                                     <img className="boxart-image boxart-image-in-padded-container" style={{height: '100%'}} src={
                                                                                         item.posters.split("|")[0]

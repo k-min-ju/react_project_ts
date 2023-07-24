@@ -1,13 +1,13 @@
 // KMDb에 영화 리스트 요청
 import axios from "axios";
 import {setSpecialList} from "../reducer/specialReducer.js";
-import {setDramaList} from "../reducer/dramaReducer.js";
-import {setSfList} from "../reducer/sfReducer.js";
 import {setLastYearList} from "../reducer/lastYearReducer.js";
 import {setRecentReleaseList} from "../reducer/recentReleaseReducer.js";
 import {setAnimationList} from "../reducer/animationReducer.js";
 import {setCrimeList} from "../reducer/crimeReducer.js";
 import {setThrillerList} from "../reducer/thrillerReducer.js";
+import {setDramaList} from "../reducer/dramaReducer.js";
+import {setSfList} from "../reducer/sfReducer.js";
 
 const movieListCount = 60;
 
@@ -68,78 +68,18 @@ export function getRecentReleaseMovie(dispatch) {
     getKMDbMovieList(searchParam, dispatch, setRecentReleaseList);
 }
 
-// 애니메이션 영화 리스트
-export function getAnimationMovie(dispatch) {
-    let date = new Date();
-    date.setMonth(date.getMonth()-3);
-    const searchParam = {
-        ServiceKey: process.env.REACT_APP_KMDB_API_KEY,
-        collection: 'kmdb_new2',
-        detail: 'Y',
-        sort: 'prodYear,1',
-        releaseDts: window.common.getDate(date),
-        releaseDte: window.common.getDate(),
-        ratedYn: 'Y',
-        type: '애니메이션',
-        listCount: movieListCount
-    };
-    getKMDbMovieList(searchParam, dispatch, setAnimationList);
-}
-
-// 범죄 영화 리스트
-export function getCrimeMovie(dispatch) {
+// 장르를 parameter로 영화 조회
+export function getGenreMovie(dispatch, genre, setReducerFunc, count, setIsLoading) {
     const searchParam = {
         ServiceKey: process.env.REACT_APP_KMDB_API_KEY,
         collection: 'kmdb_new2',
         detail: 'Y',
         sort: 'prodYear,1',
         ratedYn: 'Y',
-        genre: '범죄',
+        genre: genre,
         listCount: movieListCount
     };
-    getKMDbMovieList(searchParam, dispatch, setCrimeList);
-}
-
-// 스릴러 영화 리스트
-export function getThrillerMovie(dispatch) {
-    const searchParam = {
-        ServiceKey: process.env.REACT_APP_KMDB_API_KEY,
-        collection: 'kmdb_new2',
-        detail: 'Y',
-        sort: 'prodYear,1',
-        ratedYn: 'Y',
-        genre: '스릴러',
-        listCount: movieListCount
-    };
-    getKMDbMovieList(searchParam, dispatch, setThrillerList);
-}
-
-// 드라마 영화 리스트
-export function getDramaMovie(dispatch) {
-    const searchParam = {
-        ServiceKey: process.env.REACT_APP_KMDB_API_KEY,
-        collection: 'kmdb_new2',
-        detail: 'Y',
-        sort: 'prodYear,1',
-        ratedYn: 'Y',
-        genre: '드라마',
-        listCount: movieListCount
-    };
-    getKMDbMovieList(searchParam, dispatch, setDramaList);
-}
-
-// SF 영화 리스트
-export function getSFMovie(dispatch) {
-    const searchParam = {
-        ServiceKey: process.env.REACT_APP_KMDB_API_KEY,
-        collection: 'kmdb_new2',
-        detail: 'Y',
-        sort: 'prodYear,1',
-        ratedYn: 'Y',
-        genre: 'SF',
-        listCount: movieListCount
-    };
-    getKMDbMovieList(searchParam, dispatch, setSfList);
+    getMovieListInfinityScroll(searchParam, dispatch, setReducerFunc, count, setIsLoading);
 }
 
 async function getKMDbMovieList(searchParam, dispatch, setDataFunction) {
@@ -161,6 +101,37 @@ async function getKMDbMovieList(searchParam, dispatch, setDataFunction) {
                     if(movieInfo) {
                         movieInfo = movieInfo.filter((item) => window.common.isNotEmpty(item.posters));
                         dispatch(setDataFunction(movieInfo));
+                    }
+                });
+        }
+        await getMovieList(searchParam);
+    }
+}
+
+async function getMovieListInfinityScroll(searchParam, dispatch, setDataFunction, count, setIsLoading) {
+    if(window.common.isNotEmpty(searchParam)) {
+        const movieSearch = axios.create({
+            baseURL: process.env.REACT_APP_KMDB_API_URL,
+            timeout: 10000
+        });
+        const getMovieList = (params) => {
+            setIsLoading(true);
+            return movieSearch.get("/openapi-data2/wisenut/search_api/search_json2.jsp", {params})
+                .catch((err) => {
+                    console.log("error="+err);
+                    return Promise.reject(err);
+                })
+                .then((res) => {
+                    if(window.common.isEmpty(res)) return;
+
+                    let movieInfo = res.data.Data[0].Result;
+                    if(movieInfo) {
+                        movieInfo = movieInfo.filter((item) => window.common.isNotEmpty(item.posters));
+                        dispatch(setDataFunction(movieInfo));
+                    }
+
+                    if(count == 5) {
+                        setIsLoading(false);
                     }
                 });
         }

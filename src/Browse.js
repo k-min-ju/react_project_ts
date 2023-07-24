@@ -1,5 +1,5 @@
 import "./Browse.css";
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import googleLogOut from "./login/GoogleLogOut.js";
 import SpecialMovie, {specialMoviePlay} from "./movie/specialMovie.js";
@@ -10,16 +10,24 @@ import CrimeMovie from "./movie/crimeMovie.js"
 import ThrillerMovie from "./movie/thrillerMovie.js";
 import DramaMovie from "./movie/dramaMovie";
 import SFMovie from "./movie/sfMovie";
+import ActionMovie from "./movie/actionMovie";
+import AdventureMovie from "./movie/adventureMovie";
+import ComedyMovie from "./movie/comedyMovie";
+import FamilyMovie from "./movie/familyMovie";
+import HighteenMovie from "./movie/highteenMovie";
+import HorrorMovie from "./movie/horrorMovie";
+import MeloMovie from "./movie/meloMovie";
+import MysteryMovie from "./movie/mysteryMovie";
+import RomanceMovie from "./movie/romanceMovie";
+import YouthMovie from "./movie/youthMovie";
 import {
     getLastYearMovie,
     getRecentReleaseMovie,
-    getAnimationMovie,
-    getCrimeMovie,
-    getThrillerMovie,
-    getDramaMovie,
-    getSFMovie,
-    getSpecialMovie
+    getSpecialMovie,
+    getGenreMovie
 } from "./movie/movieListFunc.js";
+
+const maxCardListCnt = 5;   // 지난 1년간 공개된 영화, 최근 개봉한 영화를 제외한 영화 카드 리스트 개수
 
 function Browse() {
     const specialReducer = useSelector((state) => state.specialReducer);
@@ -30,14 +38,29 @@ function Browse() {
     const thrillerReducer = useSelector((state) => state.thrillerReducer);
     const dramaReducer = useSelector((state) => state.dramaReducer);
     const sfReducer = useSelector((state) => state.sfReducer);
+    const actionReducer = useSelector((state) => state.actionReducer);
+    const adventureReducer = useSelector((state) => state.adventureReducer);
+    const comedyReducer = useSelector((state) => state.comedyReducer);
+    const familyReducer = useSelector((state) => state.familyReducer);
+    const highteenReducer = useSelector((state) => state.highteenReducer);
+    const horrorReducer = useSelector((state) => state.horrorReducer);
+    const meloReducer = useSelector((state) => state.meloReducer);
+    const mysteryReducer = useSelector((state) => state.mysteryReducer);
+    const romanceReducer = useSelector((state) => state.romanceReducer);
+    const youthReducer = useSelector((state) => state.youthReducer);
     let dispatch = useDispatch();
 
     let [isMovieStart, setIsMovieStart] = useState(false);
     let [isReplay, setIsReplay] = useState(false);
     let [muted, setMuted] = useState(true);
     let [specialMovieFunc, setSpecialMovieFunc] = useState();
+    let [currentCardListCnt, setCurrentCardListCnt] = useState(0);  // 지난 1년간 공개된 영화, 최근 개봉한 영화를 제외한 현재까지 조회 완료된 cardList 수
+    let [isLoading, setIsLoading] = useState(false);
+
+    let [page, setPage] = useState(1);
     let specialMovieInit;
     const searchRef = useRef(null);
+    const genreArray = window.common.getGenreJsonData();
 
     useEffect(() => {
         const accessToken = sessionStorage.getItem("accessToken");
@@ -51,11 +74,7 @@ function Browse() {
         getSpecialMovie(dispatch);
         getLastYearMovie(dispatch);
         getRecentReleaseMovie(dispatch);
-        getAnimationMovie(dispatch);
-        getCrimeMovie(dispatch);
-        getThrillerMovie(dispatch);
-        getDramaMovie(dispatch);
-        getSFMovie(dispatch);
+        getMovieCardList(dispatch, genreArray, currentCardListCnt, setCurrentCardListCnt, setIsLoading);
 
         specialMovieInit = () => {
             setTimeout(() => {
@@ -66,6 +85,9 @@ function Browse() {
         }
         setSpecialMovieFunc(specialMovieInit);
 
+    }, []);
+
+    useEffect(() => {
         // 검색창 외 영역 클릭 감지
         function handleOutside(e) {
             // current.contains(e.target) : 컴포넌트 특정 영역 외 클릭 감지를 위해 사용
@@ -74,16 +96,14 @@ function Browse() {
             }
         }
         document.addEventListener("mousedown", handleOutside);
+
         return () => {
             document.removeEventListener("mousedown", handleOutside);
         };
-
-        // 스크롤 감지
-        window.addEventListener("scroll", handleScroll);
-
     }, []);
 
-    const handleScroll = () => {
+    const handleScroll = useCallback(() => {
+        // 스크롤 시 상단 바 고정
         if(document.documentElement.scrollTop > 0) {
             document.querySelector('.pinning-header-container').style = 'background: rgb(20,20,20);';
             document.querySelector('.main-header').style = 'background-color: rgb(20,20,20);';
@@ -92,7 +112,26 @@ function Browse() {
             document.querySelector('.pinning-header-container').style = 'background: transparent;';
             document.querySelector('.main-header').style = '';
         }
-    }
+
+        // 인피니티 스크롤
+        // window.innerHeight : 현재 브라우저의 창 높이
+        // document.documentElement.scrollTop : 현재 페이지 스크롤 위치
+        // document.documentElement.scrollHeight : 전체 높이
+        if (window.innerHeight + document.documentElement.scrollTop > document.documentElement.scrollHeight - 1000) {
+            if(!isLoading) {
+                getMovieCardList(dispatch, genreArray, currentCardListCnt, setCurrentCardListCnt, setIsLoading);
+            }
+        }
+    }, [currentCardListCnt, isLoading]);
+
+    useEffect(() => {
+        // 스크롤 감지
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [handleScroll]);
 
     return (
         <>
@@ -181,24 +220,40 @@ function Browse() {
 
                                         {/*지난 1년간 공개된 컨텐츠*/}
                                         <LastYearMovie movieList={lastYearReducer}/>
-
                                         {/*최근 개봉한 영화*/}
                                         <RecentReleaseMovie movieList={recentReleaseReducer}/>
-
                                         {/*애니메이션 영화*/}
                                         <AnimationMovie movieList={animationReducer}/>
-
                                         {/*범죄 영화*/}
                                         <CrimeMovie movieList={crimeReducer}/>
-
                                         {/*스릴러 영화*/}
                                         <ThrillerMovie movieList={thrillerReducer}/>
-
                                         {/*드라마 영화*/}
                                         <DramaMovie movieList={dramaReducer} />
-
                                         {/*SF 영화*/}
                                         <SFMovie movieList={sfReducer} />
+                                        
+                                        {/*액션 영화*/}
+                                        <ActionMovie movieList={actionReducer} />
+                                        {/*모험 영화*/}
+                                        <AdventureMovie movieList={adventureReducer} />
+                                        {/*코미디 영화*/}
+                                        <ComedyMovie movieList={comedyReducer} />
+                                        {/*가족 영화*/}
+                                        <FamilyMovie movieList={familyReducer} />
+                                        {/*하이틴 영화*/}
+                                        <HighteenMovie movieList={highteenReducer} />
+
+                                        {/*공포 영화*/}
+                                        <HorrorMovie movieList={horrorReducer} />
+                                        {/*멜로 영화*/}
+                                        <MeloMovie movieList={meloReducer} />
+                                        {/*미스터리 영화*/}
+                                        <MysteryMovie movieList={mysteryReducer} />
+                                        {/*로맨스 영화*/}
+                                        <RomanceMovie movieList={romanceReducer} />
+                                        {/*청춘 영화*/}
+                                        <YouthMovie movieList={youthReducer} />
                                     </div>
                                 </div>
                             </div>
@@ -208,6 +263,10 @@ function Browse() {
             </div>
         </>
     )
+}
+
+function ddd(setTest) {
+    setTest(500);
 }
 
 // 알림창 드롭다운 메뉴
@@ -353,6 +412,26 @@ const AccountDropDown = () => {
             </div>
         </>
     )
+}
+
+// 장르별 영화 카드 리스트 조회
+function getMovieCardList(dispatch, genreArray, currentCardListCnt, setCurrentCardListCnt, setIsLoading) {
+    if(currentCardListCnt < genreArray.length) {
+        let count = 0;
+        for(let i=currentCardListCnt; i<genreArray.length; i++) {
+            count++;
+            const data = genreArray[i];
+            getGenreMovie(dispatch, data.genre, data.setReducerFunc, count, setIsLoading);
+            if(count == maxCardListCnt) {
+                setCurrentCardListCnt(currentCardListCnt+count);
+                break;
+            }
+
+            if(i+1 == genreArray.length) {
+                setCurrentCardListCnt(currentCardListCnt+count);
+            }
+        }
+    }
 }
 
 export default Browse;

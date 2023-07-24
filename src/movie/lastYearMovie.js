@@ -22,6 +22,8 @@ function LastYearMovie(props) {
         },
     };
 
+    const movieJsonData = window.common.getMovieJsonData();
+
     return (
         <div>
             <div className="lolomoRow lolomoRow_title_card ltr-0" data-list-context="newRelease">
@@ -84,7 +86,7 @@ function LastYearMovie(props) {
                                                                 <div className={'title-card-container ltr-' + index}>
                                                                     <div id={'title-card-1-' + index} className="title-card">
                                                                         <div className="ptrack-content" data-ui-tracking-context="" data-tracking-uuid="">
-                                                                            <a href="/watch/81264371?tctx=1%2C0%2C%2C%2C%2C%2C%2C%2C%2CVideo%3A81264371%2C" role="link" aria-label={item.title} tabIndex="0" aria-hidden="false" className="slider-refocus">
+                                                                            <a href={`watch/${item.movieId}/${item.movieSeq}/${movieJsonData[Math.floor(Math.random() * 28)].movieVal}`} role="link" aria-label={item.title} tabIndex="0" aria-hidden="false" className="slider-refocus">
                                                                                 <div className="boxart-size-16x9 boxart-container boxart-rounded" style={{height: '170px'}}>
                                                                                     <img className="boxart-image boxart-image-in-padded-container" style={{height: '100%'}} src={
                                                                                         item.posters.split("|")[0]
@@ -152,7 +154,7 @@ function LastYearMovie(props) {
         //                                     <div className="title-card-container ltr-0">
         //                                         <div id="title-card-1-0" className="title-card">
         //                                             <div className="ptrack-content" data-ui-tracking-context="" data-tracking-uuid="">
-        //                                                 <a href="/watch/81264371?tctx=1%2C0%2C%2C%2C%2C%2C%2C%2C%2CVideo%3A81264371%2C" role="link" aria-label="하트시그널" tabIndex="0" aria-hidden="false" className="slider-refocus">
+        //                                                 <a href={`watch/${item.movieId}/${item.movieSeq}/${movieJsonData[Math.floor(Math.random() * 28)].movieVal}`} role="link" aria-label="하트시그널" tabIndex="0" aria-hidden="false" className="slider-refocus">
         //                                                     <div className="boxart-size-16x9 boxart-container boxart-rounded">
         //                                                         <img className="boxart-image boxart-image-in-padded-container" src="http://occ-0-993-2218.1.nflxso.net/dnm/api/v6/6gmvu2hxdfnQ55LZZjyzYR4kzGk/AAAABbmtBWcftTk87jMmenEYjD47FDuB93pqKR0cWo5R3gdzbEb4sNT2FdBVdKk8G0FL9DkUZFsCmpMDhYd6GLFO12V24OJ9Q7lkXkeh0tT-IPQQroyyfbeKcesQ1xgwwpZw8ZHLdVMtLmRPaxoyMxpk_hSziTegs623ClXfP6xDs416tZlz77eUvlWVxO-HGsgcFZjqfvKD_aQ9vQsyPVqK2jBj5ZeLQTZyAyjThSQRF6h-SSJnn-FMcX9sNe0T-b5LK5JCfDB0teEX4-Blzn-Z5TRFBr2ij11L3Dff4H9GyVwX-ZNakXxrjubEH56KuBZ-tgCneeEX44J0xqly7Ejog9ezdpS1qAOfoN4Mm-RntacXbzfq29X_0YJ1Mt61dTEUdcAya3kHo0so-SfqLrBLcH7H4gdBIAfHBToZ3BhsxTI3Gu_sFT-2WSU2xksG5f-qsRYxBnnN.webp?r=eab" alt="" />
         //                                                         <div className="fallback-text-container" aria-hidden="true">

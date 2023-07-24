@@ -120,7 +120,7 @@ function SpecialMovie(props) {
                                                     </div>
                                                 </div>
                                                 <div className="billboard-links button-layer forward-leaning">
-                                                    <a data-uia="play-button" role="link" aria-label="재생"className=" playLink isToolkit"href={`watch/${movie.movieId}/${movie.movieSeq}`}>
+                                                    <a data-uia="play-button" role="link" aria-label="재생"className=" playLink isToolkit"href={`watch/${movie.movieId}/${movie.movieSeq}/MK059186_P02`}>
                                                         <button className="color-primary hasLabel hasIcon ltr-ed00td" tabIndex="-1"type="button">
                                                             <div className="ltr-1ol9m1e">
                                                                 <div className="medium ltr-1evcx25" role="presentation">
