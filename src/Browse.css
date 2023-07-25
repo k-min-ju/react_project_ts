@@ -27162,7 +27162,7 @@ a {
 .boxart-container:hover {
     transition-delay: 500ms;
     transition-duration: 300ms;
-    transform: scale(1.5);
+    transform: scale(1.3);
 }
 
 .boxart-container:not(:hover) {
@@ -27682,4 +27682,21 @@ a {
     position: fixed;
     inset: 0px;
     background: black;
+}
+
+.watching-card-close {
+    cursor: pointer;
+    margin: 1em;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+}
+
+.watching-card-close svg {
+    background-color: #181818;
+    border-radius: 50%;
+    height: 13px;
+    padding: 5px;
+    width: 13px;
 }

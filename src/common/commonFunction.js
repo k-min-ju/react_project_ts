@@ -98,7 +98,7 @@ export function getGenreJsonData() {
             setReducerFunc : setRomanceList
         },
         {
-            genre : '청춘',
+            genre : '청춘영화',
             setReducerFunc : setYouthList
         },
     ]
@@ -194,5 +194,65 @@ export function getMovieJsonData() {
     ];
 
     return movieJson;
+}
 
+// 시청중인 영화를 보여주기 위한 함수
+export function setWatchingMovieData(paramData, movieVal) {
+    let movieData = JSON.parse(JSON.stringify(paramData));
+    movieData.movieVal = movieVal;
+
+    if(window.common.isEmpty(localStorage.getItem('watchingMovieData'))) {
+        localStorage.setItem('watchingMovieData', JSON.stringify([movieData]));
+    }
+    else {
+        const existingData = JSON.parse(localStorage.getItem('watchingMovieData'));
+        let isDuplicate = false;
+        existingData.find((movie => {
+            if(movie.DOCID == movieData.DOCID) {
+                isDuplicate = true;
+                return true;
+            }
+        }));
+        if(isDuplicate == false) {
+            existingData.push(movieData);
+            localStorage.setItem('watchingMovieData', JSON.stringify(existingData));
+        }
+    }
+
+}
+
+export function getMovieVal(movieVal, docId) {
+    let result;
+    let isDuplicate = false;
+    let existingData;
+    if(isNotEmpty(localStorage.getItem('watchingMovieData'))) {
+        existingData = JSON.parse(localStorage.getItem('watchingMovieData'));
+        existingData = existingData.find((movie => {
+            if(movie.DOCID == docId) {
+                isDuplicate = true;
+                return movie;
+            }
+        }));
+    }
+    if(isDuplicate) {
+        result = existingData.movieVal;
+    }
+    else {
+        result = movieVal;
+    }
+
+    return result;
+}
+
+// 시청중인 영화 삭제
+export function removeWatchingData(docId) {
+    if(isEmpty(docId)) return;
+
+    let existingData;
+    localStorage.removeItem(docId);
+    if(window.common.isNotEmpty(localStorage.getItem('watchingMovieData'))) {
+        existingData = JSON.parse(localStorage.getItem('watchingMovieData'));
+        existingData = existingData.filter((item, index) => item.DOCID !== docId);
+        localStorage.setItem('watchingMovieData', JSON.stringify(existingData));
+    }
 }

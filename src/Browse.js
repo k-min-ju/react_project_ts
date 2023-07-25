@@ -3,6 +3,7 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import googleLogOut from "./login/GoogleLogOut.js";
 import SpecialMovie, {specialMoviePlay} from "./movie/specialMovie.js";
+import WatchingMovie from "./movie/watchingMovie.js";
 import LastYearMovie from "./movie/lastYearMovie.js";
 import RecentReleaseMovie from "./movie/recentReleaseMovie.js";
 import AnimationMovie from "./movie/animationMovie.js";
@@ -56,11 +57,14 @@ function Browse() {
     let [specialMovieFunc, setSpecialMovieFunc] = useState();
     let [currentCardListCnt, setCurrentCardListCnt] = useState(0);  // 지난 1년간 공개된 영화, 최근 개봉한 영화를 제외한 현재까지 조회 완료된 cardList 수
     let [isLoading, setIsLoading] = useState(false);
-
-    let [page, setPage] = useState(1);
-    let specialMovieInit;
     const searchRef = useRef(null);
-    const genreArray = window.common.getGenreJsonData();
+    let specialMovieInit;
+
+    const genreArray = window.common.getGenreJsonData();    // 장르별 영화 조회하기 위한 JsonData
+    let watchingMovieList = [];    // 시청중인 영화 리스트
+    if(window.common.isNotEmpty(localStorage.getItem('watchingMovieData'))) {
+        watchingMovieList = JSON.parse(localStorage.getItem('watchingMovieData'));
+    }
 
     useEffect(() => {
         const accessToken = sessionStorage.getItem("accessToken");
@@ -71,6 +75,7 @@ function Browse() {
         }
 
         // 영화 리스트 조회
+
         getSpecialMovie(dispatch);
         getLastYearMovie(dispatch);
         getRecentReleaseMovie(dispatch);
@@ -218,7 +223,10 @@ function Browse() {
                                         <SpecialMovie movieList={specialReducer} specialMovieFunc={specialMovieFunc} isMovieStart={isMovieStart} setIsMovieStart={setIsMovieStart}
                                                       isReplay={isReplay} setIsReplay={setIsReplay} muted={muted} setMuted={setMuted}/>
 
-                                        {/*지난 1년간 공개된 컨텐츠*/}
+                                        {/*시청중인 영화*/}
+                                        <WatchingMovie movieList={watchingMovieList} />
+
+                                        {/*지난 1년간 공개된 영화*/}
                                         <LastYearMovie movieList={lastYearReducer}/>
                                         {/*최근 개봉한 영화*/}
                                         <RecentReleaseMovie movieList={recentReleaseReducer}/>

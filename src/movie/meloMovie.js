@@ -70,17 +70,21 @@ function MeloMovie(props) {
                                             >
                                             {
                                                 movieList.map((item, index) => {
+                                                    const movieVal = window.common.getMovieVal(`${movieJsonData[Math.floor(Math.random() * 28)].movieVal}`, item.DOCID);
                                                     return (
                                                         <SwiperSlide key={index}>
                                                             <div className={'slider-item slider-item-' + index} style={{width: '100%'}}>
                                                                 <div className={'title-card-container ltr-' + index}>
                                                                     <div id={'title-card-1-' + index} className="title-card">
                                                                         <div className="ptrack-content" data-ui-tracking-context="" data-tracking-uuid="">
-                                                                            <a href={`watch/${item.movieId}/${item.movieSeq}/${movieJsonData[Math.floor(Math.random() * 28)].movieVal}`} role="link" aria-label={item.title} tabIndex="0" aria-hidden="false" className="slider-refocus">
+                                                                            <a href={`watch/${item.movieId}/${item.movieSeq}/${movieVal}`} role="link" aria-label={item.title} tabIndex="0" aria-hidden="false" className="slider-refocus">
                                                                                 <div className="boxart-size-16x9 boxart-container boxart-rounded" style={{height: '170px'}}>
                                                                                     <img className="boxart-image boxart-image-in-padded-container" style={{height: '100%'}} src={
                                                                                         item.posters.split("|")[0]
-                                                                                    } alt=""/>
+                                                                                    } alt=""
+                                                                                     onClick={() => {
+                                                                                         window.common.setWatchingMovieData(item, movieVal);
+                                                                                     }} />
                                                                                     <div className="fallback-text-container" aria-hidden="true">
                                                                                         <p className="fallback-text">{item.title}</p>
                                                                                     </div>

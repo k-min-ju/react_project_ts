@@ -3,11 +3,6 @@ import axios from "axios";
 import {setSpecialList} from "../reducer/specialReducer.js";
 import {setLastYearList} from "../reducer/lastYearReducer.js";
 import {setRecentReleaseList} from "../reducer/recentReleaseReducer.js";
-import {setAnimationList} from "../reducer/animationReducer.js";
-import {setCrimeList} from "../reducer/crimeReducer.js";
-import {setThrillerList} from "../reducer/thrillerReducer.js";
-import {setDramaList} from "../reducer/dramaReducer.js";
-import {setSfList} from "../reducer/sfReducer.js";
 
 const movieListCount = 60;
 
