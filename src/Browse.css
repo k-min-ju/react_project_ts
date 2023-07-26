@@ -27700,3 +27700,47 @@ a {
     padding: 5px;
     width: 13px;
 }
+
+.ltr-14o8fj0 {
+    margin: 1em 0px 0px;
+    padding-top: 4%;
+    min-height: 65px;
+    padding-bottom: 0%;
+}
+@media screen and (min-width: 1400px) {
+    .ltr-m94oj6 {
+        font-size: calc(1.125vw);
+    }
+}
+.ltr-m94oj6 {
+    display: inline-block;
+    min-height: 65px;
+    width: 100%;
+    font-size: 1.5vw;
+}
+@media (min-width: 1500px) {
+    .ltr-gncw81 {
+        margin: 10px 60px;
+    }
+}
+.ltr-gncw81 {
+    overflow: hidden;
+    margin: 0px 4% 10px;
+    line-height: 1.6;
+    display: grid;
+    gap: 4vw 0px;
+    grid-template-columns: repeat(6, 1fr);
+}
+.ltr-1cjyscz:first-child {
+    padding-left: 0px;
+}
+.ltr-1cjyscz {
+    padding: 0px 0.2vw;
+}
+.title-card:not(.loadingTitle) {
+    display: block;
+}
+.title-card {
+    position: relative;
+    z-index: 1;
+}

@@ -17,6 +17,7 @@ import meloReducer from "./reducer/meloReducer.js";
 import mysteryReducer from "./reducer/mysteryReducer.js";
 import romanceReducer from "./reducer/romanceReducer.js";
 import youthReducer from "./reducer/youthReducer.js";
+import movieSearchReducer from "./reducer/movieSearchReducer.js";
 
 export default configureStore({
     reducer: {
@@ -38,5 +39,6 @@ export default configureStore({
         mysteryReducer: mysteryReducer.reducer,
         romanceReducer: romanceReducer.reducer,
         youthReducer: youthReducer.reducer,
+        movieSearchReducer: movieSearchReducer.reducer,
     }
 })

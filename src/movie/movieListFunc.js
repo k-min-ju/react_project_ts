@@ -77,6 +77,21 @@ export function getGenreMovie(dispatch, genre, setReducerFunc, count, setIsLoadi
     getMovieListInfinityScroll(searchParam, dispatch, setReducerFunc, count, setIsLoading);
 }
 
+// startCount로 movieListCount수 만큼 분할하여 조회
+export function getSearchMovie(dispatch, startCount, setStartCount, title, listCount, setDataFunction, setIsLoading) {
+    console.log("startCount11111111111111111111="+startCount)
+    const searchParam = {
+        ServiceKey: process.env.REACT_APP_KMDB_API_KEY,
+        collection: 'kmdb_new2',
+        detail: 'Y',
+        ratedYn: 'Y',
+        title: title,
+        startCount: startCount,
+        listCount: listCount
+    };
+    getSearchMovieList(searchParam, dispatch, setDataFunction, startCount, setStartCount, listCount, setIsLoading);
+}
+
 async function getKMDbMovieList(searchParam, dispatch, setDataFunction) {
     if(window.common.isNotEmpty(searchParam)) {
         const movieSearch = axios.create({
@@ -126,6 +141,35 @@ async function getMovieListInfinityScroll(searchParam, dispatch, setDataFunction
                     }
 
                     if(count == 5) {
+                        setIsLoading(false);
+                    }
+                });
+        }
+        await getMovieList(searchParam);
+    }
+}
+
+async function getSearchMovieList(searchParam, dispatch, setDataFunction, startCount, setStartCount, listCount, setIsLoading) {
+    if(window.common.isNotEmpty(searchParam)) {
+        const movieSearch = axios.create({
+            baseURL: process.env.REACT_APP_KMDB_API_URL,
+            timeout: 10000
+        });
+        const getMovieList = (params) => {
+            setIsLoading(true);
+            return movieSearch.get("/openapi-data2/wisenut/search_api/search_json2.jsp", {params})
+                .catch((err) => {
+                    console.log("error="+err);
+                    return Promise.reject(err);
+                })
+                .then((res) => {
+                    if(window.common.isEmpty(res)) return;
+
+                    let movieInfo = res.data.Data[0].Result;
+                    if(movieInfo) {
+                        movieInfo = movieInfo.filter((item) => window.common.isNotEmpty(item.posters));
+                        setStartCount(startCount+listCount);
+                        dispatch(setDataFunction(movieInfo));
                         setIsLoading(false);
                     }
                 });

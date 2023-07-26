@@ -37,7 +37,6 @@ function Watching(props) {
 
     const removeWatchingMovie = (index) => {
         const updatedMovieList = movieList.filter((item, i) => i !== index);
-        console.log(updatedMovieList)
         setMovieList(updatedMovieList);
         if(updatedMovieList.length < 1) {
             setIsVisible(false);
@@ -129,7 +128,6 @@ function Watching(props) {
                                                                                 window.common.removeWatchingData(docId);
                                                                             }}>
                                                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr-0 e1mhci4z1" data-uia="previewModal-closebtn" role="button" aria-label="close" tabIndex="0">
-                                                                                    <title>close</title>
                                                                                     <path fillRule="evenodd" clipRule="evenodd" d="M10.5858 12L2.29291 3.70706L3.70712 2.29285L12 10.5857L20.2929 2.29285L21.7071 3.70706L13.4142 12L21.7071 20.2928L20.2929 21.7071L12 13.4142L3.70712 21.7071L2.29291 20.2928L10.5858 12Z" fill="currentColor"></path>
                                                                                 </svg>
                                                                             </div>
