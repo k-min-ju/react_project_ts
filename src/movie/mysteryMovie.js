@@ -11,7 +11,7 @@ let slidesPer2 = 5;
 let slidesPer3 = 4;
 let slidesPer4 = 3;
 
-function AnimationMovie(props) {
+function MysteryMovie(props) {
     if(props.movieList.length == 0) return;
     let movieList = [...props.movieList];
 
@@ -27,14 +27,14 @@ function AnimationMovie(props) {
     return (
         <div>
             <div className="lolomoRow lolomoRow_title_card ltr-0" data-list-context="newRelease">
-                <h2 className="rowTitle ltr-0">애니메이션 영화</h2>
+                <h2 className="rowTitle ltr-0">미스터리 영화</h2>
                 <div className="rowContainer rowContainer_title_card" id="row-1">
                     <div className="ptrack-container">
                         <div className="rowContent slider-hover-trigger-layer">
-                            <div className="slider">
-                                <div className="sliderMask showPeek">
-                                    <div className="sliderContent row-with-x-columns">
-                                        <Swiper style={{'--swiper-pagination-bullet-inactive-opacity': '1'}}
+                                <div className="slider">
+                                    <div className="sliderMask showPeek">
+                                        <div className="sliderContent row-with-x-columns">
+                                            <Swiper style={{'--swiper-pagination-bullet-inactive-opacity': '1'}}
                                                 modules={[Navigation, Pagination, Scrollbar, A11y]}
                                                 navigation
                                                 spaceBetween={10}
@@ -67,7 +67,7 @@ function AnimationMovie(props) {
                                                         slidesPerGroup: slidesPer4,
                                                     }
                                                 }}
-                                        >
+                                            >
                                             {
                                                 movieList.map((item, index) => {
                                                     const movieVal = window.common.getMovieVal(`${movieJsonData[Math.floor(Math.random() * 28)].movieVal}`, item.DOCID);
@@ -82,9 +82,9 @@ function AnimationMovie(props) {
                                                                                     <img className="boxart-image boxart-image-in-padded-container" style={{height: '100%'}} src={
                                                                                         item.posters.split("|")[0]
                                                                                     } alt=""
-                                                                                         onClick={() => {
-                                                                                             window.common.setWatchingMovieData(item, movieVal);
-                                                                                         }} />
+                                                                                     onClick={() => {
+                                                                                         window.common.setWatchingMovieData(item, movieVal);
+                                                                                     }} />
                                                                                     <div className="fallback-text-container" aria-hidden="true">
                                                                                         <p className="fallback-text">{item.title}</p>
                                                                                     </div>
@@ -98,10 +98,10 @@ function AnimationMovie(props) {
                                                     )
                                                 })
                                             }
-                                        </Swiper>
+                                            </Swiper>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
                         </div>
                     </div>
@@ -111,4 +111,4 @@ function AnimationMovie(props) {
     );
 }
 
-export default React.memo(AnimationMovie);
+export default React.memo(MysteryMovie);

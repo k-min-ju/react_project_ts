@@ -6,7 +6,7 @@ import {ClipLoader} from "react-spinners";
 import {IdleTimerProvider} from 'react-idle-timer';
 
 function Watch() {
-    const {movieId, movieSeq} = useParams();                         // KMDb에 조회 요청할 영화 parameter
+    const {movieId, movieSeq, movieVal} = useParams();               // 영화 parameter
     let [status, setStatus] = useState('loading');          // loading : 로딩바 표시, active : 영화 상단, 하단 UI표시, passive : 영화 중지 상태일 때 영화에 대한 설명 표시
     let [isPlayMovie, setIsPlayMovie] = useState(false);    // true : 영화 상영중, false : 영화 중지
     let [movieData, setMovieData] = useState();                      // KMDb에 요청한 영화 DATA
@@ -19,6 +19,7 @@ function Watch() {
     let [currentPlayTime, setCurrentPlayTime] = useState(0);// 영화 현재 상영 시간
     let [isUpdateNeed, setIsUpdateNeed] = useState(false);  // Active컴포넌트에서 타임라인 바 상태를 update하기 위해 사용
     let [isFullScreen, setIsFullScreen] = useState(false);  // 영화 fullScreen 여부
+    let [isInit, setIsInit] = useState(true);               // 시청중인 영화 타임라인 바 setting하기 위해 사용
     const navigate = useNavigate();
     const videoRef = useRef(null);
     const ariaValueRef = useRef(null);      // 사운드 바에서 사용
@@ -47,8 +48,6 @@ function Watch() {
             localStorage.setItem('movieVolume', '0.5');
         }
 
-        // 영화 정보 가져오기 (movieData를 실제로 사용하진 않지만 하드코딩이 아니라면 이렇게 사용했을 것 같아 로직 구현)
-        // 현재는 하드코딩 되어 있음
         getKMDBMovieOne(movieId, movieSeq)
         .catch((err) => {
             console.log(err.code);
@@ -79,9 +78,11 @@ function Watch() {
                     document.getElementById('movie').volume = localStorage.getItem('movieVolume');
                     volumeSvg(videoRef, setVolumeStatus);
                     ariaValueRef.current.setAttribute('aria-valuenow', localStorage.getItem('movieVolume'))
-                    knobRef.current.style.top = localStorage.getItem('knobTop');
-                    railRef.current.children[0].style.top = localStorage.getItem('railTop');
-                    railRef.current.children[0].style.height = localStorage.getItem('railHeight');
+                    if(window.common.isNotEmpty(localStorage.getItem('knobTop'))) {
+                        knobRef.current.style.top = localStorage.getItem('knobTop');
+                        railRef.current.children[0].style.top = localStorage.getItem('railTop');
+                        railRef.current.children[0].style.height = localStorage.getItem('railHeight');
+                    }
                 }
             }, 2500);
         });
@@ -144,10 +145,11 @@ function Watch() {
                             {
                                 // 영화
                                 // status != "loading" ? <Video isPlayMovie={isPlayMovie} setIsPlayMovie={setIsPlayMovie} status={status} setStatus={setStatus} /> : null
-                                movieData != null && movieData != '' ? <Video videoRef={videoRef} redBtnRef={redBtnRef} redLineRef={redLineRef}
+                                movieData != null && movieData != '' ? <Video movieVal={movieVal} videoRef={videoRef} redBtnRef={redBtnRef} redLineRef={redLineRef}
                                                                               isPlayMovie={isPlayMovie} setIsPlayMovie={setIsPlayMovie} setMovieDuration={setMovieDuration}
                                                                               timeLineBarRef={timeLineBarRef} currentPlayTime={currentPlayTime} setCurrentPlayTime={setCurrentPlayTime}
-                                                                              isUpdateNeed={isUpdateNeed} setIsUpdateNeed={setIsUpdateNeed} setStatus={setStatus} /> : null
+                                                                              isUpdateNeed={isUpdateNeed} setIsUpdateNeed={setIsUpdateNeed} setStatus={setStatus}
+                                                                              movieData={movieData} /> : null
                             }
                             {
                                 // 영화 조작 UI
@@ -160,7 +162,8 @@ function Watch() {
                                                              tickLeftRef={tickLeftRef} tickRightRef={tickRightRef} redBtnRef={redBtnRef} redLineRef={redLineRef}
                                                              movieDuration={movieDuration} setMovieDuration={setMovieDuration} prevTimeLineWidth={prevTimeLineWidth}
                                                              currentPlayTime={currentPlayTime} setCurrentPlayTime={setCurrentPlayTime} isUpdateNeed={isUpdateNeed}
-                                                             setIsUpdateNeed={setIsUpdateNeed} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen}/> :
+                                                             setIsUpdateNeed={setIsUpdateNeed} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen}
+                                                             isInit={isInit} setIsInit={setIsInit} /> :
                                 status == "passive" && isPlayMovie == false ? <Passive /> : null
                             }
                         </div>
@@ -304,8 +307,8 @@ function SoundBar(props) {
                              onPointerDown={volumePointerDown}
                              onPointerUp={volumePointerUp}
                         >
-                            <div data-uia="scrubber-rail-filled" className="ltr-1bhvfwo" style={{top: '0', width: '100%'}} />
-                            <div ref={knobRef} data-uia="scrubber-knob" className="ltr-16i8klm" style={{left: '-0.5625rem', top: '0'}} />
+                            <div data-uia="scrubber-rail-filled" className="ltr-1bhvfwo" style={{top: '50%', width: '100%', height: '50%'}} />
+                            <div ref={knobRef} data-uia="scrubber-knob" className="ltr-16i8klm" style={{left: '-0.5625rem', top: '50%'}} />
                         </div>
                     </div>
                 </div>
@@ -360,8 +363,8 @@ function Loading() {
 
 // 영화
 function Video(props) {
-    let {videoRef, redBtnRef, redLineRef, isPlayMovie, setIsPlayMovie, setMovieDuration, timeLineBarRef,
-        currentPlayTime, setCurrentPlayTime, isUpdateNeed, setIsUpdateNeed, setStatus} = props;
+    let {movieVal, videoRef, redBtnRef, redLineRef, isPlayMovie, setIsPlayMovie, setMovieDuration, timeLineBarRef,
+        currentPlayTime, setCurrentPlayTime, isUpdateNeed, setIsUpdateNeed, setStatus, movieData} = props;
 
     useEffect(() => {
         if(isPlayMovie) {
@@ -378,7 +381,7 @@ function Video(props) {
 
     useEffect(() => {
         if(window.common.isEmpty(timeLineBarRef.current)) return;
-        timelineBarUpdate(timeLineBarRef, videoRef, currentPlayTime, redLineRef, redBtnRef, setMovieDuration);
+        timelineBarUpdate(timeLineBarRef, videoRef, currentPlayTime, redLineRef, redBtnRef, setMovieDuration, movieData);
     }, [currentPlayTime]);
 
     return (
@@ -396,7 +399,12 @@ function Video(props) {
                         }
                         localStorage.setItem('redLineWidth', '0px');
                         localStorage.setItem('redBtnLeft', 'calc(0px - 0.75rem)');
-                    }} src="https://www.kmdb.or.kr/trailer/play/MK059186_P02.mp4" style={{width: '100%', height: '1208px'}}/>
+
+                        const docId = movieData[0].DOCID;
+                        // 시청중인 영화 삭제
+                        window.common.removeWatchingData(docId);
+                        document.getElementById('backBtn').click();
+                    }} src={`https://www.kmdb.or.kr/trailer/play/${movieVal}.mp4`} style={{width: '100%', height: '1208px'}}/>
                     <div className="player-timedtext" style={{display: 'none', direction: 'ltr'}} />
                 </div>
             </div>
@@ -476,16 +484,29 @@ function Active(props) {
         , navigate, setShowTimeout, videoRef, ariaValueRef, knobRef, railRef, timeLineBarRef
         , tickRef, tickLeftRef, tickRightRef, redBtnRef, redLineRef, movieDuration, setMovieDuration
         , prevTimeLineWidth, currentPlayTime, setCurrentPlayTime, isUpdateNeed, setIsUpdateNeed
-        , isFullScreen, setIsFullScreen} = props;
+        , isFullScreen, setIsFullScreen, isInit, setIsInit} = props;
 
     useEffect(() => {
         document.getElementById('movieTitle').innerText = movieData[0].title;
         prevTimeLineWidth.current = timeLineBarRef.current.offsetWidth;
 
-        if(isUpdateNeed) {
-            timelineBarUpdate(timeLineBarRef, videoRef, currentPlayTime, redLineRef, redBtnRef, setMovieDuration);
+        if(isUpdateNeed || isPlayMovie == false) {
+            timelineBarUpdate(timeLineBarRef, videoRef, currentPlayTime, redLineRef, redBtnRef, setMovieDuration, movieData);
             setIsUpdateNeed(false);
         }
+
+        // 최초 로드 시 1번만 실행. 시청중인 영화 타임 라인 바 setting
+        if(isInit) {
+            if(window.common.isNotEmpty(localStorage.getItem(movieData[0].DOCID))) {
+                const watchingData = JSON.parse(localStorage.getItem(movieData[0].DOCID));
+                redLineRef.current.style.width = watchingData.redLineWidth;
+                redBtnRef.current.style.left = watchingData.redBtnLeft;
+                videoRef.current.currentTime = watchingData.currentTime;
+                setMovieDuration(convertToHHMM(watchingData.duration));
+                setCurrentPlayTime(watchingData.currentTime);
+            }
+        }
+        setIsInit(false);
     }, []);
 
     const [isDragging, setIsDragging] = useState(false);
@@ -574,13 +595,16 @@ function Active(props) {
 
         redLineRef.current.style.width = `${newLeftOffset}px`;
         redBtnRef.current.style.left = `calc(${newLeftOffset}px - 0.75rem)`;
-        localStorage.setItem('redLineWidth', redLineRef.current.style.width);
-        localStorage.setItem('redBtnLeft', redBtnRef.current.style.left);
+        // localStorage.setItem('redLineWidth', redLineRef.current.style.width);
+        // localStorage.setItem('redBtnLeft', redBtnRef.current.style.left);
 
         // 영화 재생 시간 = (버튼이 드래그되는 위치 / 타임라인 바의 가로 길이) * 전체 영화 재생 시간
         const currentTimeInSeconds = (newLeftOffset / barRect.width) * videoRef.current.duration;
         videoRef.current.currentTime = currentTimeInSeconds;
         setCurrentPlayTime(currentTimeInSeconds);
+
+        // 시청중인 영화 타임라인 바 데이터 저장
+        setStorageMovieIdSeq(movieData[0].DOCID, redLineRef.current.style.width, redBtnRef.current.style.left, currentTimeInSeconds, videoRef.current.duration);
     }
 
     return (
@@ -589,7 +613,7 @@ function Active(props) {
                 <div className="ltr-14rufaj" style={{alignItems: 'normal', justifyContent: 'normal'}}>
                     <div className="watch-video--back-container ltr-1jnlk6v" onClick={() => {moviePlayBtn(isPlayMovie, setIsPlayMovie, videoRef)}} style={{alignItems: 'normal', flexGrow: '1', justifyContent: 'flex-start'}}>
                         <div className="medium ltr-my293h">
-                            <button aria-label="Back to Browse" className=" ltr-14ph5iy" data-uia="control-nav-back" onClick={() => {navigate('/Browse')}}>
+                            <button id='backBtn' aria-label="Back to Browse" className=" ltr-14ph5iy" data-uia="control-nav-back" onClick={() => {navigate('/Browse')}}>
                                 <div className="control-medium ltr-1evcx25" role="presentation">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr-0 e1mhci4z1" data-name="ArrowLeft" aria-hidden="true">
                                         <path fillRule="evenodd" clipRule="evenodd" d="M24 11.0001L3.41421 11.0001L8.70711 5.70718L7.29289 4.29297L0.292892 11.293C0.105356 11.4805 0 11.7349 0 12.0001C0 12.2653 0.105356 12.5196 0.292892 12.7072L7.29289 19.7072L8.70711 18.293L3.41421 13.0001H24V11.0001Z" fill="currentColor"></path>
@@ -839,9 +863,7 @@ function TimerComponent(props) {
 
     // timeout 경과 시
     const onIdle = () => {
-        if(status == 'active' && isFullScreen) {
-            document.querySelector('.watch-video').style.cursor = 'none';
-        }
+        document.querySelector('.ltr-omkt8s').style.cursor = 'none';
         changeUI('inactive');
 
         if (isPlayMovie == false && document.querySelector('.ltr-omkt8s').classList[0] == 'inactive') {
@@ -869,9 +891,7 @@ function TimerComponent(props) {
             fullScreen(isFullScreen, setIsFullScreen);
         }
 
-        if(isFullScreen) {
-            document.querySelector('.watch-video').style.cursor = 'default';
-        }
+        document.querySelector('.ltr-omkt8s').style.cursor = 'default';
     }
 
     return (
@@ -960,7 +980,7 @@ function movieMutedMouseLeave(e, setShowTimeout) {
     setShowTimeout(showTimeout);
 }
 
-function timelineBarUpdate(timeLineBarRef, videoRef, currentPlayTime, redLineRef, redBtnRef, setMovieDuration) {
+function timelineBarUpdate(timeLineBarRef, videoRef, currentPlayTime, redLineRef, redBtnRef, setMovieDuration, movieData) {
     // 영화 재생 시간이 업데이트될 때마다 타임라인 바를 업데이트하는 로직
     // 영화의 현재 재생 시간을 타임라인 바의 길이에 대한 비율로 변환 - (현재 재생 시간 / 전체 재생 시간) * 타임라인 바 전체 길이
     const timelineBarWidth = timeLineBarRef.current.offsetWidth;
@@ -974,9 +994,12 @@ function timelineBarUpdate(timeLineBarRef, videoRef, currentPlayTime, redLineRef
 
     setMovieDuration(convertToHHMM(movieDuration-currentPlayTime));
 
-    localStorage.setItem('currentDuration', convertToHHMM(movieDuration-currentPlayTime));
-    localStorage.setItem('redLineWidth', redLineRef.current.style.width);
-    localStorage.setItem('redBtnLeft', redBtnRef.current.style.left);
+    // localStorage.setItem('currentDuration', convertToHHMM(movieDuration-currentPlayTime));
+    // localStorage.setItem('redLineWidth', redLineRef.current.style.width);
+    // localStorage.setItem('redBtnLeft', redBtnRef.current.style.left);
+
+    // 시청중인 영화 타임라인 바 데이터 저장
+    setStorageMovieIdSeq(movieData[0].DOCID, redLineRef.current.style.width, redBtnRef.current.style.left, currentPlayTime, videoRef.current.duration);
 }
 
 function fullScreen(isFullScreen, setIsFullScreen) {
@@ -986,6 +1009,15 @@ function fullScreen(isFullScreen, setIsFullScreen) {
     else {
         setIsFullScreen(true);
     }
+}
+
+function setStorageMovieIdSeq(docId, redLineWidth, redBtnLeft, currentTime, duration) {
+    localStorage.setItem(docId, JSON.stringify({
+        'redLineWidth': redLineWidth,
+        'redBtnLeft': redBtnLeft,
+        'currentTime': currentTime,
+        'duration': duration
+    }));
 }
 
 export default Watch;

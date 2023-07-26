@@ -10,12 +10,12 @@ function SpecialMovie(props) {
         if(props.muted == true) {
             movie.muted = false;
             props.setMuted(false);
-            // localStorage.setItem('specialMovieMuted', "OFF");
+            localStorage.setItem('specialMovieMuted', "OFF");
         }
         else {
             movie.muted = true;
             props.setMuted(true);
-            // localStorage.setItem('specialMovieMuted', "ON");
+            localStorage.setItem('specialMovieMuted', "ON");
         }
     }
 
@@ -120,7 +120,7 @@ function SpecialMovie(props) {
                                                     </div>
                                                 </div>
                                                 <div className="billboard-links button-layer forward-leaning">
-                                                    <a data-uia="play-button" role="link" aria-label="재생"className=" playLink isToolkit"href={`watch/${movie.movieId}/${movie.movieSeq}`}>
+                                                    <a data-uia="play-button" role="link" aria-label="재생"className=" playLink isToolkit"href={`watch/${movie.movieId}/${movie.movieSeq}/MK059186_P02`}>
                                                         <button className="color-primary hasLabel hasIcon ltr-ed00td" tabIndex="-1"type="button">
                                                             <div className="ltr-1ol9m1e">
                                                                 <div className="medium ltr-1evcx25" role="presentation">
@@ -133,7 +133,7 @@ function SpecialMovie(props) {
                                                             <span className="ltr-j0gpa2">재생</span>
                                                         </button>
                                                     </a>
-                                                    <button className="color-secondary hasLabel hasIcon ltr-1jtux27" data-uia="billboard-more-info" type="button">
+                                                    <button style={{display: 'none'}} className="color-secondary hasLabel hasIcon ltr-1jtux27" data-uia="billboard-more-info" type="button">
                                                         <div className="ltr-1ol9m1e">
                                                             <div className="medium ltr-1evcx25" role="presentation">
                                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="Hawkins-Icon Hawkins-Icon-Standard" data-name="Info">
@@ -268,17 +268,17 @@ export function specialMoviePlay(setMuted, setIsMovieStart, replay) {
         setMuted(true);
     }
     // 사운드ON
-    // else if(localStorage.getItem('specialMovieMuted') == "OFF") {
-    //     specialMovie.muted = true;
-    //     specialMovie.play();
-    //     specialMovie.muted = false;
-    //     setMuted(false);
-    // }
+    else if(localStorage.getItem('specialMovieMuted') == "OFF") {
+        specialMovie.muted = true;
+        specialMovie.play();
+        specialMovie.muted = false;
+        setMuted(false);
+    }
     else {
         specialMovie.play();
         if(replay != 'Y') {
-            specialMovie.muted = true;
-            setMuted(true);
+            specialMovie.muted = false;
+            setMuted(false);
         }
     }
     setIsMovieStart(true);
