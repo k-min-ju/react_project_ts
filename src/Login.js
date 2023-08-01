@@ -150,15 +150,15 @@ function Login() {
                             </div>
                         </div>
 
-                        <div className="Login-Other">
-                            <div className="Login-Signup-Now" >회원이 아닌가요?
-                                <a target="_self" href="/">지금 가입하세요</a>.
-                            </div>
-                            <div className="Recaptcha-Terms-Of-Use">
-                                <p></p>
-                                <div className="Recaptcha-Terms-Of-Use-Disclosure" ></div>
-                            </div>
-                        </div>
+                        {/*<div className="Login-Other" style={{display: 'hidden'}}>*/}
+                        {/*    <div className="Login-Signup-Now" >회원이 아닌가요?*/}
+                        {/*        <a target="_self" href="/">지금 가입하세요</a>.*/}
+                        {/*    </div>*/}
+                        {/*    <div className="Recaptcha-Terms-Of-Use">*/}
+                        {/*        <p></p>*/}
+                        {/*        <div className="Recaptcha-Terms-Of-Use-Disclosure" ></div>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
                     </div>
                 </div>
             </div>
