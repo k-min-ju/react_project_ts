@@ -103,7 +103,7 @@ function Browse() {
                                                 <img className="logo icon-logoUpdate active" src={process.env.PUBLIC_URL + '/mainLogo.png'} />
                                             </a>
                                             <ul className="tabbed-primary-navigation">
-                                                <li className="navigation-menu"><a className="menu-trigger" role="button" aria-haspopup="true" href="todo" tabIndex="0">메뉴</a></li>
+                                                {/*<li className="navigation-menu"><a className="menu-trigger" role="button" aria-haspopup="true" href="todo" tabIndex="0">메뉴</a></li>*/}
                                                 <li className="navigation-tab"><a className="current active" href="/browse">홈</a></li>
                                                 {/*<li className="navigation-tab"><a href="#" onClick={(e) => {e.preventDefault()}}>시리즈</a></li>*/}
                                                 {/*<li className="navigation-tab"><a href="#" onClick={(e) => {e.preventDefault()}}>영화</a></li>*/}
@@ -301,7 +301,7 @@ function MainView(props) {
 
     return(
         <div className="lolomo is-fullbleed">
-            <h1 className="visually-hidden">Netflix 홈</h1>
+            <h1 className="visually-hidden">J MOVIE 홈</h1>
             {/*특별 소개 컨텐츠*/}
             <SpecialMovie movieList={specialReducer} specialMovieFunc={specialMovieFunc} isMovieStart={isMovieStart} setIsMovieStart={setIsMovieStart}
                           isReplay={isReplay} setIsReplay={setIsReplay} muted={muted} setMuted={setMuted}/>
