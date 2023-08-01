@@ -37,10 +37,7 @@ J-MOVIE URL : <a href='http://ec2-18-183-76-123.ap-northeast-1.compute.amazonaws
 
 <br>
 <p><Strong>1. ID는 한 글자 이상 입력하고 비밀번호는 4~60자리로 입력하여 로그인 가능. 구글 계정 로그인 가능하도록 구글 로그인 구현</Strong></p>
-<p>
-<img width="450" alt="image" src="https://github.com/k-min-ju/react_project/assets/105032845/75aeadc4-2bda-4431-b00c-6fa002859bf4">
-<img width="377" alt="image" src="https://github.com/k-min-ju/react_project/assets/105032845/5fe4ebf6-d92a-47e7-8af4-c9c1930ddf20">
-</p>
+<img width="900" alt="image" src="https://github.com/k-min-ju/react_project/assets/105032845/3868213e-40e6-4148-825b-c8dcdfa54a5e">
 <br><br>
 <p><Strong>2. 영화 카드 리스트는 KMDb에 axios로 API요청하여 Redux Toolkit로 상태 관리를 하고 Swiper.js를 이용하여 페이징 구성</Strong></p>
 <img width="900" alt="image" src="https://github.com/k-min-ju/react_project/assets/105032845/0e45ef83-045a-47ec-af4c-578082b581d7">
