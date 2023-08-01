@@ -623,7 +623,7 @@ function Active(props) {
                         </div>
                     </div>
                     <div className="watch-video--flag-container ltr-1jnlk6v" onClick={() => {moviePlayBtn(isPlayMovie, setIsPlayMovie, videoRef)}} style={{alignItems: 'normal', flexGrow: '1', justifyContent: 'flex-end'}}>
-                        <div className="medium ltr-my293h">
+                        <div className="medium ltr-my293h" style={{visibility: 'hidden'}}>
                             <button aria-label="Netflix 재생 문제 신고" className=" ltr-14ph5iy" data-uia="control-flag">
                                 <div className="control-medium ltr-1evcx25" role="presentation">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr-0 e1mhci4z1" data-name="Flag" aria-hidden="true">
@@ -734,7 +734,7 @@ function Active(props) {
                                         <div className="medium ltr-er76rf" id='movieTitle'></div>
                                     </div>
                                 </div>
-                                <div className="ltr-1jnlk6v" style={{alignItems: 'normal', justifyContent: 'flex-end'}}>
+                                <div className="ltr-1jnlk6v" style={{alignItems: 'normal', justifyContent: 'flex-end', visibility: 'hidden'}}>
                                     <div className="ltr-14rufaj" style={{minWidth: '3rem', width: '3rem'}} />
                                     <div className="ltr-14rufaj" style={{minWidth: '3rem', width: '3rem'}} />
                                     <div className="medium ltr-my293h">
