@@ -5363,6 +5363,16 @@ html.watch-video-root.t_17d527 body {
     right: auto /*!rtl:ignore*/
 }
 
+@keyframes buttonFader {
+    0% {
+        opacity: 1
+    }
+
+    to {
+        opacity: 0
+    }
+}
+
 .t_17d527 .watch-video--drawer {
     background: linear-gradient(180deg,rgba(0,0,0,.8) 0,rgba(0,0,0,.9) 70%,transparent 97%);
     bottom: 7em;
