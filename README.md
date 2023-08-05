@@ -14,7 +14,7 @@
   <Strong>* State Management</Strong><br>
     > Redux ToolKit<br>
   <Strong>* Build Tools </Strong><br>
-    > Webpack | babel<br>
+    > Webpack | Babel<br>
   <Strong>* Infrastructure</Strong><br>
     > Amazon EC2<br>
   <Strong>* Web Server</Strong><br>
