@@ -1,10 +1,15 @@
 
 ## J-MOVIE
-<p>React의 숙련도를 쌓기 위해 넷플릭스를 참고하여 만든 영화를 시청할 수 있는 사이트입니다.</p>
-<p>공부 목적으로 개발한 프로젝트이며 back-end 작업 없이 오로지 Front-end로 개발하였습니다.</p>
+
+<p>
+이 프로젝트는 Netflix의 사용자 친화적인 UI/UX를 참고하여, React를 공부하면서 영화 시청을 위한 웹 애플리케이션을 개발하는 것을 목표로 하였습니다. 
+Back-End 작업 없이 Front-End만을 활용하여 프로젝트를 진행하였으며, Redux Toolkit을 사용하여 효율적인 상태 관리를 구현하였습니다.
+Webpack과 Babel을 활용하여 프로젝트의 빌드 및 번들링을 진행했고, Amazon EC2와 NginX를 통해 안정적인 웹 호스팅 및 서버 배포를 구현했습니다.
+</p>
+
 
 ## :calendar: 기간 / 인원
-<p> (2023-05-19 ~ 2023-07-30) Front-end 1명 </p>
+<p> (2023-05-19 ~ 2023-08-01) Front-end 1명 </p>
 
 
 ## :hammer: Tools
@@ -14,7 +19,7 @@
   <Strong>* State Management</Strong><br>
     > Redux ToolKit<br>
   <Strong>* Build Tools </Strong><br>
-    > Webpack | babel<br>
+    > Webpack | Babel<br>
   <Strong>* Infrastructure</Strong><br>
     > Amazon EC2<br>
   <Strong>* Web Server</Strong><br>
@@ -57,3 +62,8 @@ J-MOVIE URL : <a href='http://ec2-18-183-76-123.ap-northeast-1.compute.amazonaws
 <p><Strong>6. 영화 재생</Strong></p>
 <img width="1270" alt="image" src="https://github.com/k-min-ju/react_project/assets/105032845/1a456e2b-f0f0-4051-9f75-12111b1fa4eb">
 
+
+## 프로젝트 결과 및 성과
+<p>
+이 프로젝트를 통해 React와 관련 기술들을 학습했고, 웹 애플리케이션을 성공적으로 개발하는 경험을 얻었습니다. 넷플릭스의 UI/UX 디자인을 활용하여 사용자들에게 편리하고 직관적인 서비스를 제공하며, Redux Toolkit을 활용하여 상태 관리를 효율적으로 구현하는 능력이 향상되었습니다. 또한 웹 호스팅 및 서버 배포를 경험하며 실전 프로젝트 경험을 얻었습니다.
+</p>
