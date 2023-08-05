@@ -99,7 +99,7 @@ function Browse() {
                                     <div className="pinning-header-container" style={{background: 'transparent'}}>
                                         <div id="clcsBanner" style={{overflow: 'auto'}}></div>
                                         <div className="main-header has-billboard menu-navigation" role="navigation">
-                                            <a aria-label="넷플릭스" className="logo icon-logoUpdate active" href="/browse">
+                                            <a aria-label="J-MOVIE" className="logo icon-logoUpdate active" href="/browse">
                                                 <img className="logo icon-logoUpdate active" src={process.env.PUBLIC_URL + '/mainLogo.png'} />
                                             </a>
                                             <ul className="tabbed-primary-navigation">
@@ -487,7 +487,7 @@ const AccountDropDown = () => {
                     {/*</ul>*/}
                     <ul className="sub-menu-list sign-out-links">
                         <li className="sub-menu-item">
-                            <a className="sub-menu-link" onClick={doLogout}>넷플릭스에서 로그아웃</a>
+                            <a className="sub-menu-link" onClick={doLogout}>J MOVIE에서 로그아웃</a>
                         </li>
                     </ul>
                 </div>
