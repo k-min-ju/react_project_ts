@@ -33,11 +33,14 @@ function Login() {
     }, []);
 
     useEffect( () => {
+        const rememberIdChkBox = document.getElementById('rememberId') as HTMLInputElement;
+        const loginIdInput = document.getElementById("loginId") as HTMLInputElement;
+
         if(localStorage.getItem('rememberId') == 'Y') {
-            document.getElementById('rememberId').checked = true;
+            rememberIdChkBox.checked = true;
         }
         if(window.common.isNotEmpty(localStorage.getItem('loginId'))) {
-            document.getElementById("loginId").value = localStorage.getItem("loginId");
+            loginIdInput.value = localStorage.getItem("loginId");
         }
     }, []);
 
@@ -49,14 +52,14 @@ function Login() {
 
     // 로그인
     const doLogin = () => {
-        const rememberId = document.getElementById('rememberId').checked;
-        const inputId = document.getElementById("loginId");
-        const inputPw = document.getElementById("passWord");
+        const rememberIdChkBox = document.getElementById('rememberId') as HTMLInputElement;
+        const loginIdInput = document.getElementById("loginId") as HTMLInputElement;
+        const inputPw = document.getElementById("passWord") as HTMLInputElement;
 
         // 로그인 정보 저장
-        if(rememberId) {
+        if(rememberIdChkBox.checked) {
             if(window.common.isEmpty(localStorage.getItem('rememberId'))) localStorage.setItem('rememberId', 'Y');
-            localStorage.setItem("loginId", inputId.value);
+            localStorage.setItem("loginId", loginIdInput.value);
         }
         else {
             localStorage.removeItem('rememberId');
@@ -169,8 +172,8 @@ function Login() {
 const IdInput = (props) => {
 
     const loginIdBlur = () => {
-        let inputId = document.getElementById("loginId");
-        if(window.common.isEmpty(inputId.value)) {
+        const loginIdInput = document.getElementById("loginId") as HTMLInputElement;
+        if(window.common.isEmpty(loginIdInput.value)) {
             props.setIdError(true);
         }
         else {
@@ -193,8 +196,8 @@ const IdInput = (props) => {
 const PwInput = (props) => {
 
     const loginPwBlur = () => {
-        let inputPw = document.getElementById("passWord");
-        if(window.common.isEmpty(inputPw.value)) {
+        const loginPwInput = document.getElementById("passWordloginId") as HTMLInputElement;
+        if(window.common.isEmpty(loginPwInput.value)) {
             props.setPwError(true);
         }
         else {
