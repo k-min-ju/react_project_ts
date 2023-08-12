@@ -22,7 +22,7 @@
     "jsx": "react-jsx"
   },
   "include": [ //컴파일할 폴더 입력.
-    "src/**/*.ts",
+    "src/**/*.ts"
     "src/**/*.tsx",
     "global.d.ts"
   ],
