@@ -1,16 +1,10 @@
 const path = require('path');
 
 // plugins
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
-
-module.exports = {
-    // Other rules...
-    plugins: [
-        new NodePolyfillPlugin()
-    ]
-}
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 module.exports = {
     entry: {
@@ -25,7 +19,7 @@ module.exports = {
         alias: {
             components: path.resolve(__dirname, 'src'),
         },
-        extensions: ['.js', '.jsx'],
+        extensions: ['.js', '.jsx', 'ts', 'tsx', 'json'],
     },
     module: {
         // loader 설정
@@ -34,6 +28,11 @@ module.exports = {
                 test: /\.(js|jsx)$/,
                 exclude: /(node_modules|bower_components)/,
                 loader: 'babel-loader',
+            },
+            {
+                test: /\.(ts|tsx)$/,
+                exclude: /(node_modules|bower_components)/,
+                loader: 'ts-loader',
             },
             {
                 test: /\.css$/,
@@ -53,6 +52,8 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './public/index.html', // 번들링된 js 소스가 index.html 템플릿에 들어가게 됨
         }),
+        new TsconfigPathsPlugin(),
+        new NodePolyfillPlugin(),
     ],
     performance: {
         hints: false,
