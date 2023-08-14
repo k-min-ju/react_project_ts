@@ -1,10 +1,10 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const recentReleaseReducer = createSlice({
     name : 'recentReleaseReducer',
     initialState : [],
     reducers : {
-        setRecentReleaseList(state, action) {
+        setRecentReleaseList(state, action: PayloadAction<[]>) {
             let movieList = [...state];
             movieList = action.payload;
             return movieList;

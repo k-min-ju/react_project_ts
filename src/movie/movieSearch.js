@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {getSearchMovie} from "../movie/movieListFunc.js";
-import {addMovieSearchList} from "../reducer/movieSearchReducer.js";
+import {addMovieSearchList} from "../reducer/movieSearchReducer.ts";
 
 function MovieSearch(props) {
     if(props.movieList.length == 0) return;

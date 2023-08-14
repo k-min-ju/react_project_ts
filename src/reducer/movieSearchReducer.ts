@@ -1,15 +1,15 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const movieSearchReducer = createSlice({
     name : 'movieSearchReducer',
     initialState : [],
     reducers : {
-        setMovieSearchList(state, action) {
+        setMovieSearchList(state, action: PayloadAction<[]>) {
             let movieList = [...state];
             movieList = action.payload;
             return movieList;
         },
-        addMovieSearchList(state, action) {
+        addMovieSearchList(state, action: PayloadAction<[]>) {
             let movieList = [...state];
             let newMovieList;
             if(window.common.isNotEmpty(action.payload)) {

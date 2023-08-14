@@ -1,8 +1,8 @@
-import Login from "./Login.js";
+import Login from "./Login.tsx";
 import Browse from "./Browse.js";
 import Watch from "./Watch.js";
 import {Route, Routes} from "react-router-dom";
-import * as common from "./common/commonFunction.js";
+import * as common from "./common/commonFunction.ts";
 import {useEffect} from "react";
 // import {createContext} from "react";
 window.common = common;

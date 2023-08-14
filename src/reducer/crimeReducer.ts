@@ -1,10 +1,10 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const crimeReducer = createSlice({
     name : 'crimeReducer',
     initialState : [],
     reducers : {
-        setCrimeList(state, action) {
+        setCrimeList(state, action: PayloadAction<[]>) {
             let movieList = [...state];
             movieList = action.payload;
             return movieList;

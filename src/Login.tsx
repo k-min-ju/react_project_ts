@@ -1,19 +1,21 @@
 import "./LoginMain.css";
 import GoogleLoginButton from './login/GoogleLogin.js';
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {createBrowserHistory} from "history";
 import googleLogOut from "./login/GoogleLogOut.js";
 
 function Login() {
 
+    const google_api_key = process.env.REACT_APP_GOOGLE_API_KEY ? process.env.REACT_APP_GOOGLE_API_KEY : '';
+
     useEffect(() => {
         // 브라우저 뒤로가기 제어
         const history = createBrowserHistory();
         const listenBackEvent = () => {
             // 뒤로가기 할 때 수행할 동작
-            const url = process.env.REACT_APP_NETFLIX_URL.split("|");
+            const url = process.env.REACT_APP_NETFLIX_URL ? process.env.REACT_APP_NETFLIX_URL.split("|") : [];
             const validUrl = url.filter((url) => url == location.origin);
             const loginType = sessionStorage.getItem("loginType");
             if(loginType == 'G' && validUrl.length > 0 && (location.pathname == "/" || location.pathname == "login")) {
@@ -33,11 +35,15 @@ function Login() {
     }, []);
 
     useEffect( () => {
+        const rememberIdChkBox = document.getElementById('rememberId') as HTMLInputElement;
+        const loginIdInput = document.getElementById("loginId") as HTMLInputElement;
+
         if(localStorage.getItem('rememberId') == 'Y') {
-            document.getElementById('rememberId').checked = true;
+            rememberIdChkBox.checked = true;
         }
         if(window.common.isNotEmpty(localStorage.getItem('loginId'))) {
-            document.getElementById("loginId").value = localStorage.getItem("loginId");
+            const savedLoginId = localStorage.getItem("loginId");
+            loginIdInput.value = savedLoginId != null ? savedLoginId : "";
         }
     }, []);
 
@@ -49,14 +55,14 @@ function Login() {
 
     // 로그인
     const doLogin = () => {
-        const rememberId = document.getElementById('rememberId').checked;
-        const inputId = document.getElementById("loginId");
-        const inputPw = document.getElementById("passWord");
+        const rememberIdChkBox = document.getElementById('rememberId') as HTMLInputElement;
+        const loginIdInput = document.getElementById("loginId") as HTMLInputElement;
+        const loginPwInput = document.getElementById("passWord") as HTMLInputElement;
 
         // 로그인 정보 저장
-        if(rememberId) {
+        if(rememberIdChkBox.checked) {
             if(window.common.isEmpty(localStorage.getItem('rememberId'))) localStorage.setItem('rememberId', 'Y');
-            localStorage.setItem("loginId", inputId.value);
+            localStorage.setItem("loginId", loginIdInput.value);
         }
         else {
             localStorage.removeItem('rememberId');
@@ -64,7 +70,7 @@ function Login() {
         }
 
         // validation check
-        if(window.common.isEmpty(inputId.value)) {
+        if(window.common.isEmpty(loginIdInput.value)) {
             setIdError(true);
             return false;
         }
@@ -72,16 +78,16 @@ function Login() {
             setIdError(false);
         }
 
-        if(window.common.isEmpty(inputPw.value) || !(inputPw.value.length > 3 && inputPw.value.length < 61)) {
+        if(window.common.isEmpty(loginPwInput.value) || !(loginPwInput.value.length > 3 && loginPwInput.value.length < 61)) {
             setPwError(true);
             return false;
         }
         else {
             setPwError(false);
         }
-        
+
         // 로그인
-        if(window.common.isNotEmpty(inputId.value) && window.common.isNotEmpty(inputPw.value)) {
+        if(window.common.isNotEmpty(loginIdInput.value) && window.common.isNotEmpty(loginPwInput.value)) {
             sessionStorage.setItem('loginType', 'N');
             navigate('/Browse');
         }
@@ -144,7 +150,7 @@ function Login() {
                                 <a className="LoginHelp-Link" href="/LoginHelp">도움이 필요하신가요?</a>
                             </div>
                             <div className="Login-Api-Zone">
-                                <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_API_KEY}>
+                                <GoogleOAuthProvider clientId={google_api_key}>
                                     <GoogleLoginButton navigate={navigate}/>
                                 </GoogleOAuthProvider>
                             </div>
@@ -165,12 +171,17 @@ function Login() {
         </>
     )
 }
+interface IdInputType {
+    value: string;
+    setIdError: React.Dispatch<React.SetStateAction<boolean>>;
+    doLogin: () => void;
+}
 
-const IdInput = (props) => {
+const IdInput: React.FC<IdInputType> = (props) => {
 
     const loginIdBlur = () => {
-        let inputId = document.getElementById("loginId");
-        if(window.common.isEmpty(inputId.value)) {
+        const loginIdInput = document.getElementById("loginId") as HTMLInputElement;
+        if(window.common.isEmpty(loginIdInput.value)) {
             props.setIdError(true);
         }
         else {
@@ -179,7 +190,7 @@ const IdInput = (props) => {
     }
 
     // 엔터키로 로그인
-    const handleOnKeyDown = (e) => {
+    const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             props.doLogin();
         }
@@ -190,11 +201,16 @@ const IdInput = (props) => {
     )
 }
 
-const PwInput = (props) => {
+interface PwInputType {
+    value: string;
+    setPwError: React.Dispatch<React.SetStateAction<boolean>>;
+    doLogin: () => void;
+}
+const PwInput: React.FC<PwInputType> = (props) => {
 
     const loginPwBlur = () => {
-        let inputPw = document.getElementById("passWord");
-        if(window.common.isEmpty(inputPw.value)) {
+        const loginPwInput = document.getElementById("passWordloginId") as HTMLInputElement;
+        if(window.common.isEmpty(loginPwInput.value)) {
             props.setPwError(true);
         }
         else {
@@ -203,7 +219,7 @@ const PwInput = (props) => {
     }
 
     // 엔터키로 로그인
-    const handleOnKeyDown = (e) => {
+    const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             props.doLogin();
         }

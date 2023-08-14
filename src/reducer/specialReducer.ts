@@ -1,10 +1,10 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const specialReducer = createSlice({
     name : 'specialReducer',
     initialState : [],
     reducers : {
-        setSpecialList(state, action) {
+        setSpecialList(state, action: PayloadAction<[]>) {
             let movieList = [...state];
             movieList = action.payload;
             return movieList;

@@ -5,42 +5,44 @@ import {setDramaList} from "../reducer/dramaReducer.js";
 import {setSfList} from "../reducer/sfReducer.js";
 import {setActionList} from "../reducer/actionReducer.js";
 import {setAdventureList} from "../reducer/adventureReducer.js";
-import {setComedyList} from "../reducer/comedyReducer.js";
-import {setFamilyList} from "../reducer/familyReducer.js";
 import {setHighteenList} from "../reducer/highteenReducer.js";
 import {setHorrorList} from "../reducer/horrorReducer.js";
 import {setMeloList} from "../reducer/meloReducer.js";
 import {setMysteryList} from "../reducer/mysteryReducer.js";
 import {setRomanceList} from "../reducer/romanceReducer.js";
 import {setYouthList} from "../reducer/youthReducer.js";
+import {Dispatch, SetStateAction} from "react";
+import {ActionCreatorWithoutPayload, ActionCreatorWithPayload} from "@reduxjs/toolkit";
 
-export function isEmpty(str) {
+export function isEmpty(str: string | number | object): boolean {
     return str == null || str == "" ? true : false;
 }
-export function isNotEmpty(str) {
+export function isNotEmpty(str: string | number | object): boolean {
     return str != null && str != "" ? true : false;
 }
 
-export function getDate(date) {
+export function getDate(date: Date) {
     if(isEmpty(date)) {
         date = new Date();
     }
-    let today = '';
 
     let yyyy = date.getFullYear();
+    let getMonth = date.getMonth()+1;
+    let mm = getMonth < 10 ? '0'+getMonth : getMonth;
+    let getDate = date.getDate();
+    let dd = getDate < 10 ? '0'+getDate : getDate;
 
-    let mm = date.getMonth()+1;
-    if(mm < 10) mm = '0' + mm;
+    return yyyy + '' + mm + '' + dd;
+}
 
-    let dd = date.getDate();
-    if(dd < 10) dd = '0' + dd;
-
-    today = yyyy + '' + mm + '' + dd;
-    return today;
+// T가 아닌 T[]를 사용하는 이유 : 상태를 업데이트하는 함수를 받는 것이기 때문. Redux의 상태는 보통 배열이나 객체와 같은 자료구조로 표현
+interface GenreItem<T> {
+    genre: string;
+    setReducerFunc: ActionCreatorWithPayload<T>;
 }
 
 export function getGenreJsonData() {
-    const genreJson = [
+    const genreJson: GenreItem<[]>[] = [
         {
             genre : '애니메이션',
             setReducerFunc : setAnimationList
@@ -105,8 +107,12 @@ export function getGenreJsonData() {
     return genreJson;
 }
 
+interface MovieJsonItem {
+    movieVal: string;
+}
+
 export function getMovieJsonData() {
-    const movieJson = [
+    const movieJson: MovieJsonItem[] = [
         {
             movieVal : 'MK059366_P02'
         },

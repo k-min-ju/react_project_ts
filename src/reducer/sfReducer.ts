@@ -1,10 +1,10 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const sfReducer = createSlice({
     name : 'sfReducer',
     initialState : [],
     reducers : {
-        setSfList(state, action) {
+        setSfList(state, action: PayloadAction<[]>) {
             let movieList = [...state];
             movieList = action.payload;
             return movieList;

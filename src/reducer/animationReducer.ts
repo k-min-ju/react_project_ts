@@ -1,10 +1,10 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const animationReducer = createSlice({
     name : 'animationReducer',
     initialState : [],
     reducers : {
-        setAnimationList(state, action) {
+        setAnimationList(state, action: PayloadAction<[]>) {
             let movieList = [...state];
             movieList = action.payload;
             return movieList;

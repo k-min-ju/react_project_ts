@@ -30,7 +30,7 @@ import {
     getSearchMovie
 } from "./movie/movieListFunc.js";
 
-import {setMovieSearchList} from "./reducer/movieSearchReducer.js";
+import {setMovieSearchList} from "./reducer/movieSearchReducer.ts";
 
 const maxCardListCnt = 5;   // 지난 1년간 공개된 영화, 최근 개봉한 영화를 제외한 영화 카드 리스트 개수
 

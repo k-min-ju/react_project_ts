@@ -1,7 +1,7 @@
 import {configureStore} from "@reduxjs/toolkit";
 import lastYearReducer from './reducer/lastYearReducer.js';
 import recentReleaseReducer from "./reducer/recentReleaseReducer.js";
-import animationReducer from "./reducer/animationReducer.js";
+import animationReducer from "./reducer/animationReducer";
 import crimeReducer from "./reducer/crimeReducer.js";
 import thrillerReducer from "./reducer/thrillerReducer.js";
 import dramaReducer from "./reducer/dramaReducer.js";
@@ -19,7 +19,7 @@ import romanceReducer from "./reducer/romanceReducer.js";
 import youthReducer from "./reducer/youthReducer.js";
 import movieSearchReducer from "./reducer/movieSearchReducer.js";
 
-export default configureStore({
+export const store = configureStore({
     reducer: {
         lastYearReducer : lastYearReducer.reducer,
         recentReleaseReducer: recentReleaseReducer.reducer,
@@ -41,4 +41,7 @@ export default configureStore({
         youthReducer: youthReducer.reducer,
         movieSearchReducer: movieSearchReducer.reducer,
     }
-})
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

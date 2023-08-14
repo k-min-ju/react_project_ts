@@ -1,8 +1,8 @@
 // KMDb에 영화 리스트 요청
 import axios from "axios";
-import {setSpecialList} from "../reducer/specialReducer.js";
-import {setLastYearList} from "../reducer/lastYearReducer.js";
-import {setRecentReleaseList} from "../reducer/recentReleaseReducer.js";
+import {setSpecialList} from "../reducer/specialReducer.ts";
+import {setLastYearList} from "../reducer/lastYearReducer.ts";
+import {setRecentReleaseList} from "../reducer/recentReleaseReducer.ts";
 
 const movieListCount = 60;
 
